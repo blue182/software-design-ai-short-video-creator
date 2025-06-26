@@ -6,7 +6,7 @@ export default function Page() {
         <div className="relative h-screen w-screen overflow-hidden">
             {/* Background image */}
             <Image
-                src="/bg-auth.jpg" // Replace with your actual background image
+                src="/bg-auth.jpg"
                 alt="Background"
                 layout="fill"
                 objectFit="cover"
