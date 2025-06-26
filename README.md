@@ -1,1 +1,170 @@
 # software-design-ai-short-video-creator
+
+# 🎬 AI Short Video Creator – Software Design Course Project (HCMUS)
+
+This is the **full-stack project** for an AI-powered short video creator. It is built with **Next.js (Frontend)** and **FastAPI (Backend)**, integrating services like **OpenAI**, **Cloudinary**, **Text-to-Speech**, **Diffusers**, and **MoviePy** to generate viral short videos from trending content.
+
+---
+
+## 📦 Installation Guide
+
+### ✅ Frontend (Next.js + Tailwind CSS v3)
+
+```bash
+cd frontend
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Install Tailwind CSS v3:
+
+```bash
+npm install -D tailwindcss@3 postcss autoprefixer
+```
+
+Initialize Tailwind config:
+
+```bash
+npx tailwindcss init -p
+```
+
+Create the following files:
+
+**tailwind.config.js**
+```js
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    "./app/**/*.{js,ts,jsx,tsx}",
+    "./components/**/*.{js,ts,jsx,tsx}"
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+```
+
+**postcss.config.js**
+```js
+module.exports = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+}
+```
+
+**app/globals.css**
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+Start the frontend dev server:
+
+```bash
+npm run dev
+```
+
+---
+
+### ✅ Backend (FastAPI)
+
+```bash
+cd backend
+```
+
+Create and activate a virtual environment:
+
+**Windows:**
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
+
+**Linux/macOS:**
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+(If `requirements.txt` is missing, generate it using:)
+
+```bash
+pip freeze > requirements.txt
+```
+
+Run the FastAPI server:
+
+```bash
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+- `--reload`: Enables auto-reload on code changes
+- `--host 0.0.0.0`: Exposes server to LAN/Docker
+- `--port 8000`: Default port
+
+---
+
+## 🔗 API Documentation
+
+Once the backend server is running, open your browser at:
+
+- Swagger UI: http://localhost:8000/docs
+- ReDoc: http://localhost:8000/redoc
+
+---
+
+## 🔐 Environment Variables
+
+Create a `.env` file inside the `backend/` folder:
+
+```env
+OPENAI_API_KEY=your_openai_key
+
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+```
+
+---
+
+## 🎯 Features
+
+- Generate video scripts using OpenAI or Gemini
+- Convert script to voice using edge-tts or Bark
+- Generate images using AI (Diffusers)
+- Stitch video segments and add subtitles
+- Select background music automatically
+- Upload final video to Cloudinary
+- Preview generated video via API
+
+---
+
+## ⚙️ Tech Stack
+
+- **Frontend:** Next.js, React, Tailwind CSS
+- **Backend:** FastAPI, Uvicorn
+- **AI Services:** OpenAI, Diffusers, Transformers
+- **Media:** MoviePy, edge-tts, Bark
+- **Cloud:** Cloudinary
+- **Other libs:** python-dotenv, aiofiles, python-multipart
+
+---
+
+## 📄 License
+
+This project is a final assignment for the course **Software Design (Kỹ thuật phần mềm)** at **University of Science – VNUHCM (HCMUS)**.  
+It is intended **for educational purposes only**.
