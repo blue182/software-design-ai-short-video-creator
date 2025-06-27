@@ -3,6 +3,7 @@ frontend/node_modules
 frontend/.next
 frontend/.env.local
 frontend/scripts
+frontend/upload-test.js
 
 # Python
 backend/venv

@@ -44,7 +44,9 @@ function SideNav() {
                                     }`}
                             >
                                 <item.icon className="w-5 h-5" />
-                                <span className="font-medium">{item.name}</span>
+                                <span className="font-medium text-sm sm:text-sm md:text-base lg:text-lg">
+                                    {item.name}
+                                </span>
                             </div>
                         </Link>
                     );

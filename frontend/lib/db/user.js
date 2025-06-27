@@ -1,13 +1,18 @@
 // lib/db/user.js
-import { db } from '@/configs/db';
-import { users } from '@/configs/schemas/users';
-import { eq } from 'drizzle-orm';
+const { db } = require('../../configs/db.js');
+const { users } = require('../../configs/schemas/users.js');
+const { eq } = require('drizzle-orm');
 
-export async function getUserByEmail(email) {
+async function getUserByEmail(email) {
     const result = await db.select().from(users).where(eq(users.email, email));
     return result[0];
 }
 
-export async function createUser({ email, username, avatar_url }) {
+async function createUser({ email, username, avatar_url }) {
     return await db.insert(users).values({ email, username, avatar_url });
 }
+
+module.exports = {
+    getUserByEmail,
+    createUser,
+};
