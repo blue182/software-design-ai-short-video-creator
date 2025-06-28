@@ -49,22 +49,7 @@ module.exports = {
 }
 ```
 
-**postcss.config.js**
-```js
-module.exports = {
-  plugins: {
-    tailwindcss: {},
-    autoprefixer: {},
-  },
-}
-```
 
-**app/globals.css**
-```css
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-```
 
 Start the frontend dev server:
 
@@ -85,7 +70,7 @@ Create and activate a virtual environment:
 **Windows:**
 ```bash
 python -m venv venv
-venv\Scripts\activate
+.\venv\Scripts\Activate.ps1
 ```
 
 **Linux/macOS:**
