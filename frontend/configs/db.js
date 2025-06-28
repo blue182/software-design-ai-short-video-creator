@@ -1,4 +1,15 @@
-import { neon } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-http';
-const sql = neon(process.env.NEXT_PUBLIC_DRIZZLE_DATABASE_URL);
-export const db = drizzle({ client: sql });
+require('dotenv').config();
+
+const { drizzle } = require('drizzle-orm/neon-http');
+const { neon } = require('@neondatabase/serverless');
+
+
+console.log('👉 Database URL:', process.env.DRIZZLE_DATABASE_URL);
+
+const sql = neon(process.env.DRIZZLE_DATABASE_URL);
+const db = drizzle(sql);
+
+module.exports = {
+    db,
+    sql,
+};

@@ -1,8 +1,12 @@
 // File: config/schema/durations.js
-import { pgTable, serial, integer, varchar } from 'drizzle-orm/pg-core';
+const { pgTable, serial, integer, varchar } = require('drizzle-orm/pg-core');
 
-export const durations = pgTable('durations', {
+const durations = pgTable('durations', {
     id: serial('id').primaryKey(),
     seconds: integer('seconds').notNull(),
     label: varchar('label', { length: 50 }),
 });
+
+module.exports = {
+    durations
+}

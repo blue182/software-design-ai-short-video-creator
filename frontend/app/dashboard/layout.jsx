@@ -13,7 +13,7 @@ function DashboardLayout({ children }) {
 
             <div className="flex pt-[80px]"> {/* Đẩy content xuống dưới Header */}
                 {/* Sidebar cố định */}
-                <div className="hidden md:block fixed top-[80px] left-0 h-[calc(100vh-80px)] bg-white z-40 min-w-[220px] max-w-[300px] w-[20vw] border-r">
+                <div className="hidden md:block fixed top-[80px] left-0 h-[calc(100vh-80px)] bg-white z-40 min-w-[200px] max-w-[250px] w-[20vw] border-r">
                     <SideNav />
                 </div>
 

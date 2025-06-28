@@ -1,12 +1,14 @@
 // File: config/schema/videos.js
-import { pgTable, serial, integer, varchar, text, timestamp } from 'drizzle-orm/pg-core';
-import { users } from './users';
-import { voices } from './voices';
-import { styles } from './styles';
-import { languages } from './languages';
-import { durations } from './durations';
+const { pgTable, serial, integer, text, varchar, timestamp } = require('drizzle-orm/pg-core');
+const { users } = require('./users');
+const { styles } = require('./styles');
+const { voices } = require('./voices');
+const { languages } = require('./languages');
+const { durations } = require('./durations');
 
-export const videos = pgTable('videos', {
+
+
+const videos = pgTable('videos', {
     id: serial('id').primaryKey(),
     userId: integer('user_id').references(() => users.id),
     title: text('title'),
@@ -21,3 +23,5 @@ export const videos = pgTable('videos', {
     backgroundMusicUrl: text('background_music_url'),
     createdAt: timestamp('created_at').defaultNow(),
 });
+
+module.exports = { videos };

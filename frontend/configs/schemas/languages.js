@@ -1,9 +1,13 @@
 // File: config/schema/languages.js
-import { pgTable, serial, varchar, text } from 'drizzle-orm/pg-core';
+const { pgTable, serial, varchar, text } = require('drizzle-orm/pg-core');
 
-export const languages = pgTable('languages', {
+const languages = pgTable('languages', {
     id: serial('id').primaryKey(),
     code: varchar('code', { length: 10 }).unique().notNull(),
     name: varchar('name', { length: 50 }).notNull(),
-    flagIconUrl: text('flag_icon_url'),
+    flagEmoji: varchar('flag_emoji', { length: 4 }),
 });
+
+module.exports = {
+    languages
+};

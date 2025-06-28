@@ -1,8 +1,18 @@
 // File: config/schema/index.js
-export * from './voices';
-export * from './styles';
-export * from './languages';
-export * from './durations';
-export * from './users';
-export * from './videos';
-export * from './segments';
+const { voices } = require('./voices');
+const { styles } = require('./styles');
+const { languages } = require('./languages');
+const { durations } = require('./durations');
+const { users } = require('./users');
+const { videos } = require('./videos');
+const { segments } = require('./segments');
+
+module.exports = {
+    voices,
+    styles,
+    languages,
+    durations,
+    users,
+    videos,
+    segments,
+};

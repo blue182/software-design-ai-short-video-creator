@@ -1,8 +1,8 @@
 // File: config/schema/segments.js
-import { pgTable, serial, integer, text, doublePrecision } from 'drizzle-orm/pg-core';
-import { videos } from './videos';
+const { pgTable, serial, integer, text, doublePrecision } = require('drizzle-orm/pg-core');
+const { videos } = require('./videos'); // Assuming videos table is defined in videos.js
 
-export const segments = pgTable('video_segments', {
+const segments = pgTable('video_segments', {
     id: serial('id').primaryKey(),
     videoId: integer('video_id').references(() => videos.id),
     segmentIndex: integer('segment_index'),
@@ -13,3 +13,7 @@ export const segments = pgTable('video_segments', {
     start_time: doublePrecision('start_time'),
     end_time: doublePrecision('end_time'),
 });
+
+module.exports = {
+    segments
+};
