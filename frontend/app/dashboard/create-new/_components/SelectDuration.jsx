@@ -10,7 +10,7 @@ import {
 import axios from '@/lib/axios';
 
 
-function SelectDuration({ onUserSelect }) {
+function SelectDuration({ onUserSelect, selected, hasError }) {
     const [optionDurations, setOptionDurations] = useState([]);
 
     useEffect(() => {
@@ -40,10 +40,13 @@ function SelectDuration({ onUserSelect }) {
 
             <p className="text-sm sm:text-base md:text-lg text-gray-500">Select the duration of your video</p>
 
-            <Select onValueChange={(value) => {
-                onUserSelect('duration', value)
+            <Select value={selected?.value || ''} onValueChange={(value) => {
+                onUserSelect('duration', { value: value, id: optionDurations.find(option => option.seconds === parseInt(value)).id })
             }} >
-                <SelectTrigger className="w-full mt-2 p-6 text-sm sm:text-base md:text-lg lg:text-xl">
+                <SelectTrigger
+                    className={`w-full mt-2 p-6 text-sm sm:text-base md:text-lg lg:text-xl border ${hasError ? 'border-red-500' : 'border-gray-300'}`}
+
+                >
                     <SelectValue placeholder="Select duration" className="[&[data-placeholder]]:text-gray-400" />
                 </SelectTrigger>
                 <SelectContent>
@@ -56,6 +59,9 @@ function SelectDuration({ onUserSelect }) {
                     ))}
                 </SelectContent>
             </Select>
+            {hasError && (
+                <p className="text-red-500 text-sm mt-2">Please select a duration.</p>
+            )}
 
         </div>
     )

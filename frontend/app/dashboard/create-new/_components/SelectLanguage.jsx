@@ -11,7 +11,7 @@ import {
 import axios from '@/lib/axios';
 
 
-function SelectLanguage({ onUserSelect }) {
+function SelectLanguage({ onUserSelect, selected, hasError }) {
     const [optionLanguages, setOptionLanguages] = useState([]);
 
     useEffect(() => {
@@ -24,6 +24,8 @@ function SelectLanguage({ onUserSelect }) {
             .catch((error) => {
                 console.error('Error fetching languages:', error);
             });
+
+
     }, []);
 
     return (
@@ -34,10 +36,15 @@ function SelectLanguage({ onUserSelect }) {
             <p className="text-sm sm:text-base md:text-lg text-gray-500">
                 Select the language for your video
             </p>
-            <Select onValueChange={(value) => {
-                onUserSelect('language', value)
-            }} >
-                <SelectTrigger className="w-full mt-2 p-6 text-sm sm:text-base md:text-lg lg:text-xl">
+            <Select
+                value={selected?.code || ''}
+                onValueChange={(value) => {
+                    onUserSelect('language', { code: value, id: optionLanguages.find(lang => lang.code === value)?.id, languages: optionLanguages.find(lang => lang.code === value)?.name })
+                }} >
+                <SelectTrigger
+                    className={`w-full mt-2 p-6 text-sm sm:text-base md:text-lg lg:text-xl border ${hasError ? 'border-red-500' : 'border-gray-300'}`}
+
+                >
                     <SelectValue placeholder="Select language" className="[&[data-placeholder]]:text-gray-400" />
                 </SelectTrigger>
                 <SelectContent>
@@ -57,6 +64,9 @@ function SelectLanguage({ onUserSelect }) {
                     ))}
                 </SelectContent>
             </Select>
+            {hasError && (
+                <p className="text-red-500 text-sm mt-2">Please select a language.</p>
+            )}
 
         </div>
     )

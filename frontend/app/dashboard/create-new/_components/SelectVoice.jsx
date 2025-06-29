@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/select"
 import axios from '@/lib/axios';
 
-function SelectVoice({ onUserSelect }) {
+function SelectVoice({ onUserSelect, selected, hasError }) {
     const [optionVoices, setOptionVoices] = useState([]);
 
     useEffect(() => {
@@ -29,10 +29,15 @@ function SelectVoice({ onUserSelect }) {
         <div className='mt-10'>
             <h2 className="font-bold text-primary text-lg sm:text-xl md:text-xl lg:text-2xl">Voice</h2>
             <p className="text-sm sm:text-base md:text-lg text-gray-500">Select the voice for your video</p>
-            <Select onValueChange={(value) => {
-                onUserSelect('voice', value)
-            }} >
-                <SelectTrigger className="w-full mt-2 p-6 text-sm sm:text-base md:text-lg lg:text-xl">
+            <Select
+                value={selected?.voice || ''}
+                onValueChange={(value) => {
+                    onUserSelect('voice', { voice: value, id: optionVoices.find(voice => voice.name === value)?.id })
+                }} >
+                <SelectTrigger
+                    className={`w-full mt-2 p-6 text-sm sm:text-base md:text-lg lg:text-xl border ${hasError ? 'border-red-500' : 'border-gray-300'}`}
+
+                >
                     <SelectValue placeholder="Select voice" className="[&[data-placeholder]]:text-gray-400" />
                 </SelectTrigger>
                 <SelectContent>
@@ -45,6 +50,9 @@ function SelectVoice({ onUserSelect }) {
                     ))}
                 </SelectContent>
             </Select>
+            {hasError && (
+                <p className="text-red-500 text-sm mt-2">Please select a voice.</p>
+            )}
         </div>
     )
 }
