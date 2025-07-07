@@ -42,10 +42,12 @@
 "use client";
 
 import { useUser } from "@clerk/nextjs";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { VideoFrameContext } from "./_contexts/VideoFrameContext";
 
 export default function Provider({ children }) {
     const { user } = useUser();
+    const [videoFrames, setVideoFrames] = useState([]);
 
     useEffect(() => {
         if (user) {
@@ -69,5 +71,11 @@ export default function Provider({ children }) {
         }
     };
 
-    return <>{children}</>;
+    return (
+        <div>
+            <VideoFrameContext.Provider value={{ videoFrames, setVideoFrames }}>
+                {children}
+            </VideoFrameContext.Provider>
+        </div>
+    );
 }

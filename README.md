@@ -103,6 +103,8 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
 ---
 
+Need instal ffmpeg to run moviepy 'https://ffmpeg.org/download.html'
+
 ## 🔗 API Documentation
 
 Once the backend server is running, open your browser at:
