@@ -1,7 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api import trends
-from app.api import generate_raw_script
+from app.api import generate_script
+from app.api import generate_video
+from app.api import export_video
+from app.api import generate_preview_video
 
 app = FastAPI(title="AI Short Video Creator API", version="1.0.0", description="API for creating short videos using AI technologies")           
 # CORS configuration
@@ -14,4 +17,7 @@ app.add_middleware(
 )
 
 app.include_router(trends.router, prefix="/api/trends", tags=["trends"])
-app.include_router(generate_raw_script.router, prefix="/api/generate-raw-script")
+app.include_router(generate_script.router, prefix="/api/script")
+app.include_router(generate_video.router, prefix="/api/video", tags=["video"])
+app.include_router(generate_preview_video.router, prefix="/api/preview-video", tags=["preview-video"])
+app.include_router(export_video.router, prefix="/api/export-video", tags=["export-video"])

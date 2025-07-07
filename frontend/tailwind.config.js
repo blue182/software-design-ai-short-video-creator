@@ -25,6 +25,17 @@ module.exports = {
 					foreground: 'hsl(var(--popover-foreground))'
 				},
 				primary: {
+					'50': '#f0f6fc',
+					'75': '#e1f0fa',
+					'100': '#dbe9f8',
+					'200': '#b5cde7',
+					'300': '#8fb1d7',
+					'400': '#6a95c6',
+					'500': '#3c6da6',
+					'600': '#2d5383',
+					'700': '#1e3960',
+					'800': '#10203d',
+					'900': '#03061a',
 					DEFAULT: '#00326c',
 					foreground: 'hsl(var(--primary-foreground))'
 				},
@@ -54,9 +65,34 @@ module.exports = {
 					'4': 'hsl(var(--chart-4))',
 					'5': 'hsl(var(--chart-5))'
 				}
+			},
+			keyframes: {
+				'accordion-down': {
+					from: {
+						height: '0'
+					},
+					to: {
+						height: 'var(--radix-accordion-content-height)'
+					}
+				},
+				'accordion-up': {
+					from: {
+						height: 'var(--radix-accordion-content-height)'
+					},
+					to: {
+						height: '0'
+					}
+				}
+			},
+			animation: {
+				'accordion-down': 'accordion-down 0.2s ease-out',
+				'accordion-up': 'accordion-up 0.2s ease-out'
 			}
 		}
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [
+		require("tailwindcss-animate"),
+		require('tailwind-scrollbar-hide')
+	],
 }
 

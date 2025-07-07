@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
+    "allowJs": true,
+    "checkJs": false,
+    "jsx": "react-jsx",
     "paths": {
       "@/*": ["./*"]
     }
-  }
+  },
+  "include": ["remotion", "app", "pages", "components"]
 }
