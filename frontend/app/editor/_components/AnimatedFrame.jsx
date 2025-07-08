@@ -24,10 +24,10 @@ export default function AnimatedFrame({ frame, duration, frameIndex }) {
             opacity = progress;
             break;
         case 'zoom-in':
-            scale = interpolate(progress, [0, 1], [0.8, 1]);
+            scale = interpolate(progress, [0, 1], [1, 1.2]);
             break;
         case 'zoom-out':
-            scale = interpolate(progress, [0, 1], [1, 0.8]);
+            scale = interpolate(progress, [0, 1], [1.2, 1]);
             break;
         case 'slide-left':
             translateX = interpolate(progress, [0, 1], [width, 0]);
