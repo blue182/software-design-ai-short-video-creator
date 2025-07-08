@@ -1,0 +1,20 @@
+const data = {
+  segment_index: 6,
+  start_time: 26.5,
+  end_time: 29.5,
+  duration: 3,
+  image_url: 'https://res.cloudinary.com/dszu0fyxg/image/upload/v1751868177/ai-short-video-creator/vid_dce71f_1751867232/images/g6wdg2qsfo36o0lu4gpt.png',
+  audio_url: 'https://res.cloudinary.com/dszu0fyxg/video/upload/v1751867266/ai-short-video-creator/vid_dce71f_1751867232/audio/iheb3kmpb14oluuhgojg.mp3',
+  text: 'Vậy, điều gì thực sự khiến bạn phải rùng mình sợ hãi?',
+  preview_url: 'https://res.cloudinary.com/dszu0fyxg/video/upload/v1751868234/ai-short-video-creator/vid_dce71f_1751867232/preview/j9advczw0lb8lgdreql8.mp4',
+  subtitle_color: 'yellow',
+  subtitle_bg: 'rgba(0, 0, 0, 0.5)',
+  text_styles: [],
+  subtitle_enabled: false,
+  stroke_color: 'black',
+  stroke_width: 3,
+  font_size: 20,
+  animation: 'fade',
+  space_bottom: 0,
+  description_image: 'The camera pulls back to reveal a generic, curious person. A large, slightly translucent thought bubble floats above their head, filled with a single, ambiguous question mark. The background is a clean, academic setting with subtly blurred books and diagrams, inviting the viewer to contemplate their own fears in an educational context. The lighting is soft and contemplative.'
+}

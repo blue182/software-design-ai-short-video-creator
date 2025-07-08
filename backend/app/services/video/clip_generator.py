@@ -7,10 +7,21 @@ from app.core.cloudinary_client import upload_file
 from .subtitle_image import generate_subtitle_image
 from moviepy.editor import vfx
 from moviepy.editor import ColorClip, CompositeVideoClip
-import requests  
+import requests 
+import random
 
 FADE_DURATION = 0.5
 TEMP_DIR = "temp"
+
+SUPPORTED_ANIMATIONS = [
+    "zoom-in",
+    "zoom-out",
+    "slide-left",
+    "slide-right",
+    "slide-up",
+    "slide-down",
+    "fade"
+]
 
 
 def download_image_to_temp(url, filename=None):
@@ -28,9 +39,6 @@ def download_image_to_temp(url, filename=None):
         print(f"[Error] Failed to download image from {url}: {e}")
         raise
 
-
-
-
 def apply_animation(clip, animation, duration, VIDEO_SIZE=(720, 1280)):
     W, H = VIDEO_SIZE
     IN_DURATION = FADE_DURATION
@@ -41,12 +49,14 @@ def apply_animation(clip, animation, duration, VIDEO_SIZE=(720, 1280)):
 
     # Animation by MoviePy built-in transform
     if animation == "zoom-in":
-        clip = clip.resize(lambda t: 1.0 + 0.2 * (1 - (t / duration)))
-        clip = clip.set_position("center")  # Ensure it's centered
+        # Từ 1.0 (gốc) ➝ 1.2 (phóng to dần)
+        clip = clip.resize(lambda t: 1.0 + 0.2 * (t / duration))
+        clip = clip.set_position("center")
 
     elif animation == "zoom-out":
-        clip = clip.resize(lambda t: 1.0 - 0.2 * (1 - (t / duration)))
-        clip = clip.set_position("center")  # Fix here
+        # Từ 1.2 ➝ 1.0 (thu nhỏ dần)
+        clip = clip.resize(lambda t: 1.2 - 0.2 * (t / duration))
+        clip = clip.set_position("center")
 
     elif animation == "slide-left":
         clip = clip.set_position(lambda t: (W * (1 - t / duration), 'center'))
@@ -79,23 +89,25 @@ def create_clip_from_segment(segment, index=0, upload_single=False, render_id=No
     subtitle = segment.get("text", "")
     duration = segment["duration"]
     animation = segment.get("animation", "")
+    if not animation or animation not in SUPPORTED_ANIMATIONS:
+        animation = random.choice(SUPPORTED_ANIMATIONS)
 
     subtitle_enabled = segment.get("subtitle_enabled", False)
-    subtitle_color = segment.get("subtitle_color", "white")
-    subtitle_bg = segment.get("subtitle_bg", "rgba(0,0,0,0.5)")
-    font_size = segment.get("font_size", 24)
-    text_styles = segment.get("text_styles", [])
-    stroke_color = segment.get("stroke_color", "black")
-    stroke_width = segment.get("stroke_width", 2)
-    space_bottom = segment.get("space_bottom", 20)
+
+    if subtitle_enabled:
+        subtitle_color = segment.get("subtitle_color", "white")
+        subtitle_bg = segment.get("subtitle_bg", "rgba(0,0,0,0.5)")
+        font_size = segment.get("font_size", 24)
+        text_styles = segment.get("text_styles", [])
+        stroke_color = segment.get("stroke_color", "black")
+        stroke_width = segment.get("stroke_width", 2)
+        space_bottom = segment.get("space_bottom", 20)
 
     img_clip = ImageClip(image_path).set_duration(duration)
     video_width, video_height = img_clip.size
     VIDEO_SIZE = (video_width, video_height)
 
     audio = AudioFileClip(audio_path).subclip(0, min(duration, AudioFileClip(audio_path).duration))
-    # img_clip = ImageClip(image_path).set_duration(duration).resize(height=VIDEO_SIZE[1])
-    # img_clip = apply_animation(img_clip, animation, duration, VIDEO_SIZE=VIDEO_SIZE)
     raw_clip = ImageClip(image_path).set_duration(duration).resize(height=VIDEO_SIZE[1])
     animated_clip = apply_animation(raw_clip, animation, duration, VIDEO_SIZE=VIDEO_SIZE)
     img_clip = animated_clip

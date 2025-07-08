@@ -8,8 +8,13 @@ async function getUserByEmail(email) {
     return result[0];
 }
 
-async function createUser({ email, username, avatar_url }) {
-    return await db.insert(users).values({ email, username, avatar_url });
+async function createUser({ email, username, avatar_url, clerk_id }) {
+    const result = await db
+        .insert(users)
+        .values({ email, username, avatar_url, clerkId: clerk_id })
+        .returning();
+
+    return result[0];
 }
 
 module.exports = {

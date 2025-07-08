@@ -3,6 +3,7 @@ const { pgTable, serial, varchar, text, timestamp } = require('drizzle-orm/pg-co
 
 const users = pgTable('users', {
     id: serial('id').primaryKey(),
+    clerkId: varchar('clerk_id', { length: 128 }).unique().notNull(),
     username: varchar('username', { length: 50 }),
     profile_text: varchar('profile_text', { length: 1000 }),
     email: varchar('email', { length: 100 }).unique().notNull(),
