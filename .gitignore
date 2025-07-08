@@ -8,6 +8,7 @@ frontend/upload-test.js
 backend/venv
 backend/__pycache__/
 backend/.env
+**/__pycache__/
 
 # System
 .DS_Store
