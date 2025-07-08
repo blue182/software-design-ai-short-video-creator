@@ -10,6 +10,11 @@ class Settings(BaseSettings):
     DEFAULT_MUSIC_URL: str = "https://res.cloudinary.com/dszu0fyxg/video/upload/v1751654344/backgound_music_default_d6jhpl.mp3"  # URL nhạc mặc định nếu không tìm thấy
     TOGETHERAI_API_KEY: str
 
+
+    # for random trends function
+    SERPAPI_KEY: str
+    RAPIDAPI_KEY: str
+
     class Config:
         env_file = ".env"
 
