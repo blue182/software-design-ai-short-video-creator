@@ -23,15 +23,12 @@ const languageToFlagMap = {
     "th-TH": "th"
 };
 function getCountryFlagCode(languageCode) {
-    console.log('getCountryFlagCode:', languageCode);
     return languageToFlagMap[languageCode] || "us";
 }
 
 
 function SelectVoice({ onUserSelect, selected, hasError }) {
     const [optionVoices, setOptionVoices] = useState([]);
-    console.log('SelectVoice:', selected);
-    console.log('data:', optionVoices);
 
     useEffect(() => {
         axios.get('/voices')

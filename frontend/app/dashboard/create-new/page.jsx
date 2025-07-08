@@ -11,6 +11,11 @@ import CustomLoading from '@/components/CustomLoading';
 import ErrorAlertDialog from "@/components/ErrorAlertDialog";
 import { useRouter } from 'next/navigation';
 import SelectVideoSize from './_components/SelectVideoSize';
+import { UserDetailContext } from '@/app/_contexts/UserDetailContext';
+import { convertToFrameList } from '@/helpers/frame-utils';
+import { duration } from 'drizzle-orm/gel-core';
+import { VideoFrameContext } from '@/app/_contexts/VideoFrameContext';
+import { languages } from '@/configs/schemas/languages';
 
 function CreateNew() {
     const router = useRouter();
@@ -27,9 +32,13 @@ function CreateNew() {
     const [title, setTitle] = useState('');
     const [loading, setLoading] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const { userDetail, setUserDetail } = React.useContext(UserDetailContext);
+    const { videoFrames, setVideoFrames } = React.useContext(VideoFrameContext);
+    const [infoVideo, setInfoVideo] = useState({});
+    const [idCloud, setIdCloud] = useState('');
+    const [idVideo, setIdVideo] = useState('');
 
     const onHandleInputChange = (fieldName, fieldValue) => {
-        console.log('onHandleInputChange:', fieldName, fieldValue);
         setFormData(prev => ({
             ...prev,
             [fieldName]: fieldValue
@@ -76,9 +85,52 @@ function CreateNew() {
         setLoading(false);
     };
 
+    React.useEffect(() => {
+        setVideoFrames({
+            videoId: idVideo,
+            id_cloud: idCloud,
+            title: title,
+            framesList: [],
+            totalDuration: 0,
+            infoVideo: infoVideo,
+        });
+    }
+
+        , [setVideoFrames, infoVideo, idCloud]);
+
+    const saveDraft = async (infoVideo, segments) => {
+        console.log('Saving draft with infoVideo:', infoVideo);
+        console.log('Segments:', segments);
+        if (!userDetail || !userDetail.id) {
+            console.error('User detail is not available');
+            return;
+        }
+        setLoading(true);
+        try {
+            const res = await axios.post('/api/videos/create-preview', {
+                userId: userDetail.id,
+                infoVideo: infoVideo,
+                segments: segments
+            });
+            const result = res.data;
+
+            setVideoFrames({
+                videoId: result.videoId,
+                id_cloud: infoVideo.id_cloud,
+                title: infoVideo.title,
+                framesList: segments,
+                totalDuration: segments.reduce((acc, f) => acc + (f?.duration || 0), 0),
+                infoVideo: infoVideo,
+            });
+            return result.videoId;
+        } catch (err) {
+            console.error('Error saving draft:', err);
+            // Handle error, e.g., show error message
+        }
+    }
+
     const handleGenerateVideo = async () => {
-        // console.log('Form Data:', formData);
-        // console.log('Script:', script);
+
         const scriptData = {
             script: script,
             title: title,
@@ -92,13 +144,34 @@ function CreateNew() {
         console.log('Script Data:', scriptData);
         setLoading(true);
         try {
-            const res = await axios.post('/api/export-video', scriptData);
-            const result = res.data;
+            // const res = await axios.post('/api/generate/preview-video', scriptData);
+            // const result = res.data;
             // const result = "fake data for testing";
+            const res = localStorage.getItem('video_data');
+            const result = JSON.parse(res);
             console.log('Video generation response:', result);
-            localStorage.setItem('video_data', JSON.stringify(result));
-            router.push('/dashboard/preview')
-            // Handle the response as needed, e.g., navigate to video page or show success message
+            const infoVideo = {
+                id_cloud: result?.id_cloud,
+                title: result?.title || '',
+                languages: result?.language || null,
+                topic: result?.topic || null,
+                style: result?.style || null,
+                voice: result?.voice || null,
+                duration: result?.duration || null,
+                video_url: result?.video_url || null,
+                video_size: result?.video_size || { aspect: '9:16', width: 720, height: 1280 },
+
+            };
+            setInfoVideo(infoVideo);
+            const segments = convertToFrameList(result?.segments || []);
+            // localStorage.setItem('video_data', JSON.stringify(result));
+            const videoId = await saveDraft(infoVideo, segments);
+            setIdCloud(result?.id_cloud || '');
+            setIdVideo(videoId);
+            setTitle(result?.title || 'Untitled Video');
+
+            router.push('/editor')
+
         } catch (err) {
             console.error('Error when generate video:', err);
             // Handle error, e.g., show error message

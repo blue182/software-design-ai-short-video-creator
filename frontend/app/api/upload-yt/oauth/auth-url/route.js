@@ -1,24 +1,26 @@
-// frontend/app/upload-yt/oauth/auth-url/route.js
 
-import { google } from 'googleapis';
+// // frontend/app/upload-yt/oauth/auth-url/route.js
 
-export async function GET() {
-  const oauth2Client = new google.auth.OAuth2(
-    process.env.YT_CLIENT_ID,
-    process.env.YT_CLIENT_SECRET,
-    "http://localhost:3000/upload-yt/oauth/callback"
-  );
+// import { google } from 'googleapis';
 
-  const scopes = ['https://www.googleapis.com/auth/youtube.upload'];
+// export async function GET() {
+//   const oauth2Client = new google.auth.OAuth2(
+//     process.env.YT_CLIENT_ID,
+//     process.env.YT_CLIENT_SECRET,
+//     "http://localhost:3000/upload-yt/oauth/callback"
+//   );
 
-  const authUrl = oauth2Client.generateAuthUrl({
-    access_type: 'offline',
-    scope: scopes,
-    prompt: 'consent',
-  });
+//   const scopes = ['https://www.googleapis.com/auth/youtube.upload'];
 
-  return new Response(JSON.stringify({ authUrl }), {
-    status: 200,
-    headers: { 'Content-Type': 'application/json' },
-  });
-}
+//   const authUrl = oauth2Client.generateAuthUrl({
+//     access_type: 'offline',
+//     scope: scopes,
+//     prompt: 'consent',
+//   });
+
+//   return new Response(JSON.stringify({ authUrl }), {
+//     status: 200,
+//     headers: { 'Content-Type': 'application/json' },
+//   });
+// }
+
