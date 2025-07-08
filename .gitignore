@@ -8,8 +8,8 @@ frontend/upload-test.js
 backend/venv
 backend/__pycache__/
 backend/.env
-backend/app/__pycache__/
-__pycache__/
+
+**/__pycache__/
 # System
 .DS_Store
 *.log
