@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     ToggleGroup,
     ToggleGroupItem,
@@ -25,6 +25,29 @@ function SelectTopic({ onUserSelect, selected, hasError }) {
     const isCustomInit = selected?.isCustomTopic === true;
     const [mode, setMode] = useState(isCustomInit ? "custom" : "predefined");
     const [customValue, setCustomValue] = useState(isCustomInit ? selected?.topic : "");
+
+    //add gen trends
+    const [trends, setTrends] = useState([]);
+    const [loadingTrends, setLoadingTrends] = useState(false);
+
+    useEffect(() => {
+        if (mode === "trends") {
+            setLoadingTrends(true);
+            fetch("http://localhost:8000/api/trends")
+                .then(res => res.json())
+                .then(data => {
+                    setTrends(data.keywords || []);
+                })
+                .catch(err => {
+                    console.error("Failed to fetch trends:", err);
+                    setTrends([]);
+                })
+                .finally(() => {
+                    setLoadingTrends(false);
+                });
+        }
+    }, [mode]);
+
 
     return (
         <div >
@@ -71,7 +94,15 @@ function SelectTopic({ onUserSelect, selected, hasError }) {
                     >
                         Custom Prompt
                     </ToggleGroupItem>
-
+                    <ToggleGroupItem 
+                        value="trends" 
+                        className="px-6 py-4 border text-base font-bold
+                   rounded-r-sm rounded-l-none
+                   data-[state=on]:bg-primary-50
+                   data-[state=on]:border-primary
+                   data-[state=on]:text-primary">
+                        Random Trends
+                    </ToggleGroupItem>
                 </ToggleGroup>
 
             </div>
@@ -115,7 +146,32 @@ function SelectTopic({ onUserSelect, selected, hasError }) {
                     />
                 )
             }
-
+            {/* Random Trends */}
+            {mode === "trends" && (
+                <>
+                    {loadingTrends ? (
+                        <p className="text-gray-500 mt-2">Loading trends...</p>
+                    ) : (
+                        <Select
+                            value={selected?.topic || ""}
+                            onValueChange={(value) => {
+                                onUserSelect("topic", { topic: value, isCustomTopic: false });
+                            }}
+                        >
+                            <SelectTrigger className={`w-full p-6 text-sm sm:text-base md:text-base lg:text-lg border ${hasError ? "border-red-500" : "border-gray-300"}`}>
+                                <SelectValue placeholder="Select a trending keyword" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {trends.map((trend, index) => (
+                                    <SelectItem key={index} value={trend}>
+                                        <span className="text-sm sm:text-base md:text-md lg:text-lg">{trend}</span>
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    )}
+                </>
+            )}
             {
                 hasError && (
                     <p className="text-red-500 text-sm mt-2">Please select a topic.</p>
