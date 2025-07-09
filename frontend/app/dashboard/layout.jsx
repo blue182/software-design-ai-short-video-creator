@@ -18,7 +18,7 @@ function DashboardLayout({ children }) {
                 </div>
 
                 {/* Content co giãn */}
-                <div className="flex-1 ml-0 md:ml-[20vw] overflow-x-auto">
+                <div className="flex-1 ml-0 md:ml-[20vw] overflow-x-auto min-h-[calc(100vh-80px)] ">
                     {children}
                 </div>
 

@@ -4,10 +4,13 @@ import { useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import { VideoFrameContext } from "./_contexts/VideoFrameContext";
 import { UserDetailContext } from "./_contexts/UserDetailContext";
+import { ListVideosContext } from "./_contexts/ListVideosContext";
+import { List, ListVideo } from "lucide-react";
 
 export default function Provider({ children }) {
     const { user } = useUser();
     const [videoFrames, setVideoFrames] = useState({});
+    const [listVideos, setListVideos] = useState({});
     const [userDetail, setUserDetail] = useState(null);
 
     useEffect(() => {
@@ -49,9 +52,11 @@ export default function Provider({ children }) {
     return (
         <div>
             <UserDetailContext.Provider value={{ userDetail, setUserDetail }}>
-                <VideoFrameContext.Provider value={{ videoFrames, setVideoFrames }}>
-                    {children}
-                </VideoFrameContext.Provider>
+                <ListVideosContext.Provider value={{ listVideos, setListVideos }}>
+                    <VideoFrameContext.Provider value={{ videoFrames, setVideoFrames }}>
+                        {children}
+                    </VideoFrameContext.Provider>
+                </ListVideosContext.Provider>
             </UserDetailContext.Provider >
         </div>
     );

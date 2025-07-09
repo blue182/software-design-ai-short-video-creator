@@ -1,8 +1,13 @@
 // File: lib/db/video.js
 const { db } = require('../../configs/db');
-const { videos } = require('../../configs/schemas/videos');
-const { segments } = require('../../configs/schemas/segments');
+const { videos } = require('@/configs/schemas/videos');
+const { styles } = require('@/configs/schemas/styles');
+const { voices } = require('@/configs/schemas/voices');
+const { languages } = require('@/configs/schemas/languages');
+const { durations } = require('@/configs/schemas/durations');
+const { segments } = require('@/configs/schemas/segments');
 const { eq } = require('drizzle-orm');
+const { and } = require('drizzle-orm');
 
 
 
@@ -19,7 +24,7 @@ async function createVideo(videoData) {
         languages,
         userId,
         background_music_url,
-        status = 'pending',
+        status = 'preview',
         ytb_url,
     } = videoData;
 
@@ -150,10 +155,119 @@ async function updateExportVideoUrl(videoId, videoUrl) {
     }
 }
 
+async function getAllSegmentsByVideoId(videoId) {
+    if (!videoId) {
+        throw new Error('videoId is required');
+    }
+
+    try {
+        const segmentsList = await db
+            .select()
+            .from(segments)
+            .where(eq(segments.video_id, Number(videoId)))
+            .orderBy(segments.segment_index);
+
+        return segmentsList;
+    } catch (err) {
+        console.error('❌ Error fetching segments by videoId:', err);
+        throw err;
+    }
+}
+
+
+async function getPreviewVideosWithFirstSegment(userId) {
+    if (!userId) throw new Error('userId is required');
+
+    try {
+        const previewVideos = await db
+            .select({
+                video: videos,
+                style: styles,
+                voice: voices,
+                language: languages,
+                duration: durations,
+            })
+            .from(videos)
+            .leftJoin(styles, eq(videos.style_id, styles.id))
+            .leftJoin(voices, eq(videos.voice_id, voices.id))
+            .leftJoin(languages, eq(videos.language_id, languages.id))
+            .leftJoin(durations, eq(videos.duration_id, durations.id))
+            .where(and(eq(videos.user_id, userId), eq(videos.status, 'preview')));
+
+        const result = [];
+
+        for (const row of previewVideos) {
+            const { video, style, voice, language, duration } = row;
+            const videoId = video.id;
+
+            const firstSegment = await db
+                .select()
+                .from(segments)
+                .where(eq(segments.video_id, videoId))
+                .orderBy(segments.segment_index)
+                .limit(1);
+
+            if (!firstSegment.length) {
+                throw new Error(`No segments found for video ID: ${videoId}`);
+            }
+
+            result.push({
+                ...video,
+                style,
+                voice,
+                language,
+                duration,
+                firstSegment: firstSegment[0] || null
+            });
+        }
+
+        return result;
+    } catch (err) {
+        console.error('❌ Error fetching preview videos with joins:', err);
+        throw err;
+    }
+}
+
+async function getExportedVideos(userId) {
+    if (!userId) throw new Error('userId is required');
+
+    try {
+        const exportedVideos = await db
+            .select({
+                video: videos,
+                style: styles,
+                voice: voices,
+                language: languages,
+                duration: durations,
+            })
+            .from(videos)
+            .leftJoin(styles, eq(videos.style_id, styles.id))
+            .leftJoin(voices, eq(videos.voice_id, voices.id))
+            .leftJoin(languages, eq(videos.language_id, languages.id))
+            .leftJoin(durations, eq(videos.duration_id, durations.id))
+            .where(and(eq(videos.user_id, userId), eq(videos.status, 'exported')));
+
+        return exportedVideos.map(row => ({
+            ...row.video,
+            style: row.style,
+            voice: row.voice,
+            language: row.language,
+            duration: row.duration
+        }));
+    } catch (err) {
+        console.error('❌ Error fetching exported videos with joins:', err);
+        throw err;
+    }
+}
+
+
 
 module.exports = {
     createVideo,
     insertSegments,
     updateExportVideoUrl,
-    getSegmentsByVideoId
+    getSegmentsByVideoId,
+    getPreviewVideosWithFirstSegment,
+    getExportedVideos,
+    getAllSegmentsByVideoId
 };
