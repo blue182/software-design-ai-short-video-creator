@@ -22,13 +22,6 @@ function SelectStyle({ onUserSelect, selected, hasError }) {
         }
     }, []);
 
-
-
-
-    // console.log('selectedOption', selectedOption);
-    // console.log('selected', selected);
-    // console.log('hasError', hasError);
-
     return (
         <div >
             <h2 className="font-bold text-primary text-lg sm:text-md md:text-lg lg:text-xl">Style</h2>

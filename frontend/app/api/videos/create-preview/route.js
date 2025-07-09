@@ -1,4 +1,4 @@
-import { createVideo, insertSegments } from '@/lib/db/videos';
+import { createVideo, insertSegments, getSegmentsByVideoId } from '@/lib/db/videos';
 
 export async function POST(req) {
     const { userId, infoVideo, segments } = await req.json();
@@ -27,6 +27,18 @@ export async function POST(req) {
         return new Response(JSON.stringify({ error: 'Failed to save segments' }), { status: 500 });
     }
 
-    return new Response(JSON.stringify({ ok: true, videoId }), { status: 200 });
+    let savedSegments;
+
+    try {
+        // Fetch segments to ensure they are saved correctly
+        savedSegments = await getSegmentsByVideoId(videoId);
+    }
+    catch (err) {
+        console.error('Failed to fetch saved segments:', err);
+        return new Response(JSON.stringify({ error: 'Failed to fetch saved segments' }), { status: 500 });
+    }
+    const framesList = savedSegments;
+
+    return new Response(JSON.stringify({ ok: true, videoId, framesList }), { status: 200 });
 
 }

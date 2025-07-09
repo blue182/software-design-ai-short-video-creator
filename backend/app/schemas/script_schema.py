@@ -17,8 +17,4 @@ class FullScriptRequest(BaseModel):
     title: str = None
     script: str
     id_cloud: str = None
-    video_size: dict = {
-        "aspect": "9:16",
-        "width": 720,
-        "height": 1280
-    } 
+    video_size: dict = { } 

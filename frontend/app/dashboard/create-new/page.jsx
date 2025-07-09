@@ -25,7 +25,7 @@ function CreateNew() {
         duration: {},
         language: {},
         voice: {},
-        video_size: { aspect: '9:16', width: 720, height: 1280 } // Default size if not set
+        video_size: {} // Default size if not set
     });
     const [script, setScript] = useState('');
     const [errorField, setErrorField] = useState([]);
@@ -34,9 +34,6 @@ function CreateNew() {
     const [showModal, setShowModal] = useState(false);
     const { userDetail, setUserDetail } = React.useContext(UserDetailContext);
     const { videoFrames, setVideoFrames } = React.useContext(VideoFrameContext);
-    const [infoVideo, setInfoVideo] = useState({});
-    const [idCloud, setIdCloud] = useState('');
-    const [idVideo, setIdVideo] = useState('');
 
     const onHandleInputChange = (fieldName, fieldValue) => {
         setFormData(prev => ({
@@ -85,22 +82,10 @@ function CreateNew() {
         setLoading(false);
     };
 
-    React.useEffect(() => {
-        setVideoFrames({
-            videoId: idVideo,
-            id_cloud: idCloud,
-            title: title,
-            framesList: [],
-            totalDuration: 0,
-            infoVideo: infoVideo,
-        });
-    }
 
-        , [setVideoFrames, infoVideo, idCloud]);
 
     const saveDraft = async (infoVideo, segments) => {
-        console.log('Saving draft with infoVideo:', infoVideo);
-        console.log('Segments:', segments);
+
         if (!userDetail || !userDetail.id) {
             console.error('User detail is not available');
             return;
@@ -114,15 +99,7 @@ function CreateNew() {
             });
             const result = res.data;
 
-            setVideoFrames({
-                videoId: result.videoId,
-                id_cloud: infoVideo.id_cloud,
-                title: infoVideo.title,
-                framesList: segments,
-                totalDuration: segments.reduce((acc, f) => acc + (f?.duration || 0), 0),
-                infoVideo: infoVideo,
-            });
-            return result.videoId;
+            return result;
         } catch (err) {
             console.error('Error saving draft:', err);
             // Handle error, e.g., show error message
@@ -141,15 +118,14 @@ function CreateNew() {
             voice: formData.voice,
             video_size: formData.video_size || { aspect: '9:16', width: 720, height: 1280 } // Default size if not set
         }
-        console.log('Script Data:', scriptData);
         setLoading(true);
         try {
-            // const res = await axios.post('/api/generate/preview-video', scriptData);
-            // const result = res.data;
+            const res = await axios.post('/api/generate/preview-video', scriptData);
+            const result = res.data;
             // const result = "fake data for testing";
-            const res = localStorage.getItem('video_data');
-            const result = JSON.parse(res);
-            console.log('Video generation response:', result);
+            // const res = localStorage.getItem('video_data_1');
+            // const result = JSON.parse(res);
+            // console.log('Video generation response:', result);
             const infoVideo = {
                 id_cloud: result?.id_cloud,
                 title: result?.title || '',
@@ -162,13 +138,19 @@ function CreateNew() {
                 video_size: result?.video_size || { aspect: '9:16', width: 720, height: 1280 },
 
             };
-            setInfoVideo(infoVideo);
             const segments = convertToFrameList(result?.segments || []);
-            // localStorage.setItem('video_data', JSON.stringify(result));
-            const videoId = await saveDraft(infoVideo, segments);
-            setIdCloud(result?.id_cloud || '');
-            setIdVideo(videoId);
-            setTitle(result?.title || 'Untitled Video');
+
+            const data = await saveDraft(infoVideo, segments);
+            console.log('Draft saved:', data);
+            const video_data = {
+                id_cloud: result?.id_cloud || '',
+                infoVideo: infoVideo,
+                framesList: data?.framesList || [],
+                totalDuration: infoVideo.duration?.value || 0,
+                videoId: data?.videoId || '',
+                title: infoVideo.title || 'Untitled Video',
+            }
+            localStorage.setItem('video_data', JSON.stringify(video_data));
 
             router.push('/editor')
 

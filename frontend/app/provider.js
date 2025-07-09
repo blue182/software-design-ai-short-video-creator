@@ -7,7 +7,7 @@ import { UserDetailContext } from "./_contexts/UserDetailContext";
 
 export default function Provider({ children }) {
     const { user } = useUser();
-    const [videoFrames, setVideoFrames] = useState([]);
+    const [videoFrames, setVideoFrames] = useState({});
     const [userDetail, setUserDetail] = useState(null);
 
     useEffect(() => {
@@ -38,7 +38,6 @@ export default function Provider({ children }) {
 
             if (data.ok && data.user) {
                 setUserDetail(data.user); // ✅ Lưu user vào context
-                console.log("✅ User loaded:", data.user);
             } else {
                 console.warn("⚠️ API did not return user info.");
             }
