@@ -89,7 +89,7 @@ function RemotionPlayer() {
                         position: 'relative',
                     }}
                 >
-                    {!isNaN(videoFrames?.totalDuration) && (
+                    {videoFrames?.totalDuration > 0 && (
                         <Player
                             ref={playerRef}
                             component={RemotionComposition}

@@ -23,84 +23,73 @@ function Editor() {
     const [title, setTitle] = React.useState('');
     const [infoData, setInfoData] = React.useState({});
     const [frameList, setFrameList] = React.useState([])
+    const [mounted, setMounted] = React.useState(false);
 
     React.useEffect(() => {
-
-        if (videoFrames && videoFrames.framesList) {
-            setFrameList(videoFrames.framesList);
+        const savedData = localStorage.getItem('video_data');
+        if (savedData) {
+            try {
+                const parsedData = JSON.parse(savedData);
+                setVideoFrames(parsedData);
+            } catch (error) {
+                console.error('Error parsing video_data from localStorage:', error);
+            }
         }
-    }, [videoFrames]);
+        setMounted(true);
+    }, []);
 
+    if (!mounted) return null;
 
-
-    // React.useEffect(() => {
-    //     const rawData = JSON.parse(localStorage.getItem('video_data'));
-
-    //     const id_cloud = rawData?.id_cloud || '';
-    //     const title = rawData?.title || 'Untitled Video';
-    //     const frames = convertToFrameList(rawData?.segments || []);
-
-    //     const infoData = {
-    //         id_cloud: id_cloud,
-    //         title: rawData?.title || '',
-    //         topic: rawData?.topic || null,
-    //         style: rawData?.style || null,
-    //         voice: rawData?.voice || null,
-    //         video_url: rawData?.video_url || null,
-    //         video_size: rawData?.video_size || { aspect: '9:16', width: 720, height: 1280 },
-    //     };
-
-    //     setInfoData(infoData);
-    //     setTitle(title);
-    //     setIdCloud(id_cloud);
-
-    //     setVideoFrames({
-    //         id_cloud: id_cloud,
-    //         title: title,
-    //         framesList: frames,
-    //         totalDuration: frames.reduce((acc, f) => acc + (f?.duration || 0), 0),
-    //         infoData: infoData,
-    //     });
-    // }, []);
 
 
     const handleExport = async () => {
         console.log('click export');
         setLoading(true);
-        const sleep = (ms) => new Promise(r => setTimeout(r, ms));
-        await sleep(10000);
+        try {
+            const res = await axios.post('/api/export-video', {
+                id_cloud: videoFrames?.id_cloud || 'temporary-id',
+                segments: videoFrames?.framesList || [],
+            });
+
+            const { videoUrl } = res.data;
 
 
 
-        setVideoUrl("https://res.cloudinary.com/dszu0fyxg/video/upload/v1751971588/ai-short-video-creator/vid_dce71f_1751867232/video/m8zrp8utgbawcy2pgdto.mp4"); // Reset video URL before export
+            if (videoUrl) {
 
+                try {
+                    const response = await axios.post('/api/videos/save-video-export', {
+                        videoId: videoFrames?.videoId || 'temporary-id',
+                        videoUrl: videoUrl,
+                    });
+
+                    if (response.data.ok) {
+                        console.log('Video export URL saved successfully:', response.data.videoUrl);
+                    } else {
+                        console.error('Failed to save video export URL:', response.data.error);
+                    }
+                } catch (error) {
+                    console.error('Error saving video export URL:', error);
+                    alert('Failed to save video export URL. Check console for details.');
+                }
+
+                setVideoFrames({
+                    ...videoFrames,
+                    videoUrl: videoUrl,
+                });
+                setVideoUrl(videoUrl);
+
+
+            } else {
+                alert('Render complete but no video URL was returned.');
+            }
+        } catch (err) {
+            console.error('Export failed:', err);
+            alert('Export failed. Check console for details.');
+        }
         setLoading(false);
-
-        // try {
-        //     const res = await axios.post('/api/export-video', {
-        //         id_cloud: videoFrames?.id_cloud || 'temporary-id',
-        //         segments: videoFrames?.framesList || [],
-        //     });
-
-        //     const { videoUrl } = res.data;
-
-        //     if (videoUrl) {
-        //         setVideoUrl(videoUrl);
-        //         setVideoFrames(prev => ({
-        //             ...prev,
-        //             videoUrl: videoUrl,
-        //         }));
-
-        //     } else {
-        //         alert('Render complete but no video URL was returned.');
-        //     }
-        // } catch (err) {
-        //     console.error('Export failed:', err);
-        //     alert('Export failed. Check console for details.');
-        // }
     };
 
-    console.log('videoFrames', videoFrames);
 
     return (
         <div>

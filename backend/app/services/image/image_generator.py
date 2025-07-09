@@ -9,8 +9,8 @@ from app.core.cloudinary_client import upload_file
 from diffusers import StableDiffusionPipeline
 
 # ==== Cấu hình mặc định ====
-DEFAULT_WIDTH = 1080
-DEFAULT_HEIGHT = 1600
+DEFAULT_WIDTH = 720
+DEFAULT_HEIGHT = 1280
 MAX_CONCURRENT_RENDER = 2  # 👈 Tối đa ảnh render song song
 
 # ==== Khởi tạo pipeline ====
@@ -38,13 +38,13 @@ semaphore = asyncio.Semaphore(MAX_CONCURRENT_RENDER)
 
 
 # ==== Hàm render + upload 1 ảnh ====
-async def render_single_image(segment: dict, folder: str) -> dict:
+async def render_single_image(segment: dict, folder: str, VIDEO_WIDTH: int = 720, VIDEO_HEIGHT: int = 1280) -> dict:
     prompt = segment.get("description_image")
     if not prompt:
         raise ValueError(f"❌ Missing 'description_image' in segment {segment['segment_index']}")
 
-    width = segment.get("width", DEFAULT_WIDTH)
-    height = segment.get("height", DEFAULT_HEIGHT)
+    width = VIDEO_WIDTH or DEFAULT_WIDTH
+    height = VIDEO_HEIGHT or DEFAULT_HEIGHT
 
     async with semaphore:
         with torch.inference_mode():
@@ -69,8 +69,8 @@ async def render_single_image(segment: dict, folder: str) -> dict:
 
 
 # ==== Hàm chính để xử lý toàn bộ danh sách segment ====
-async def generate_and_upload_images(segments: list, folder: str = "generated/images") -> list:
-    tasks = [render_single_image(seg, folder) for seg in segments]
+async def generate_and_upload_images(segments: list, folder: str = "generated/images", VIDEO_WIDTH: int = 720, VIDEO_HEIGHT: int = 1280) -> list:
+    tasks = [render_single_image(seg, folder, VIDEO_WIDTH, VIDEO_HEIGHT) for seg in segments]
     updated_segments = await asyncio.gather(*tasks)
     return updated_segments
 

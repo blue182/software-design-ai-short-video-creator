@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export async function POST(req) {
     const formData = await req.json();
-    console.log('Received request:', formData);
+    // console.log('Received request:', formData);
 
     try {
         const aiResponse = await axios.post(

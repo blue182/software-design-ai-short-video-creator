@@ -24,15 +24,19 @@ async def generate_video(request: FullScriptRequest):
     script = await generate_full_script(request)
     segments = script.get("full_script", [])
 
+    print("\n\n video size:", request.video_size)
     for segment in segments:
-        print(f"Segment {segment['segment_index']}: {segment['text']}, duration: {segment['duration']}, ")
+        print(f"Segment {segment['segment_index']} - Text: {segment['text']}, Duration: {segment['duration']}")
+
+    video_size = request.video_size or { "aspect": "9:16", "width": 720, "height": 1280 }
+
+    VIDEO_WIDTH = video_size['width']
+    VIDEO_HEIGHT = video_size['height']
+
 
     segments_with_audio = await generate_audio_segments(segments, request.voice.get('code') , render_id)
-    print("\n\nSegments with audio:")
 
-    print("\n\nImage generation started...")
-    segments_with_images = await generate_and_upload_images(segments_with_audio, render_id)
-    print("\n\nSegments with images:")
+    segments_with_images = await generate_and_upload_images(segments_with_audio, render_id, VIDEO_WIDTH, VIDEO_HEIGHT)
 
 
     # Add background music if style is provided
@@ -47,6 +51,7 @@ async def generate_video(request: FullScriptRequest):
         language=request.language,
         voice=request.voice,
         title=request.title,
+        video_size=request.video_size,
         segments=[
             VideoSegment(
                 id=segment['id'],
@@ -61,7 +66,6 @@ async def generate_video(request: FullScriptRequest):
                
             ) for segment in segments_with_images
         ],
-        # video_url=url_video
     )
 
 

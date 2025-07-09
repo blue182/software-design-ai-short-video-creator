@@ -9,7 +9,6 @@ import { UserDetailContext } from '../../_contexts/UserDetailContext'
 
 
 function TrackList() {
-    const [frameList, setFrameList] = React.useState([])
     const [selectedFrame, setSelectedFrame] = React.useState(0);
     const { videoFrames, setVideoFrames } = React.useContext(VideoFrameContext);
     const { userDetail, setUserDetail } = React.useContext(UserDetailContext);
@@ -24,26 +23,21 @@ function TrackList() {
 
     React.useEffect(() => {
         let totalDuration = 0;
-        frameList.forEach(frame => {
+        videoFrames?.framesList.forEach(frame => {
             totalDuration += frame?.duration;
         });
-        setVideoFrames({
-            totalDuration: totalDuration,
-            framesList: frameList,
-            selectedFrame: selectedFrame,
-        })
-    }, [frameList, selectedFrame,]);
+        setVideoFrames(prev => ({
+            ...prev,
+            totalDuration,
+            selectedFrame,
+        }));
 
-    React.useEffect(() => {
-        if (videoFrames?.framesList && videoFrames?.framesList.length > 0) {
-            setFrameList(videoFrames.framesList);
-        }
-    }, []);
+    }, [selectedFrame]);
 
     return (
         <div className='p-3 bg-primary-50 rounded-lg'>
             <div className='max-h-[70vh] overflow-auto p-1 scrollbar-hide'>
-                {frameList.map((frame, index) => (
+                {videoFrames?.framesList.map((frame, index) => (
                     <div key={index}
                         className={`flex flex-col items-center mb-2 border-b border-primary-200 pb-2 mt-3 p-2 rounded-lg ${selectedFrame === index ? 'bg-white' : 'bg-transparent hover:bg-primary-100 cursor-pointer'} `}
                         onClick={() => setSelectedFrame(index)}>
