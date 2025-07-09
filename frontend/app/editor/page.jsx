@@ -11,6 +11,7 @@ import VideoExportDialog from './_components/VideoExportDialog'
 import CustomLoading from '@/components/CustomLoading'
 import { UserDetailContext } from '../_contexts/UserDetailContext'
 import { convertToFrameList } from '@/helpers/frame-utils'
+import formatDateTime from '@/helpers/format-date'
 
 
 
@@ -40,7 +41,7 @@ function Editor() {
 
     if (!mounted) return null;
 
-
+    console.log("📹 Video Frames:", videoFrames);
 
     const handleExport = async () => {
         console.log('click export');
@@ -100,7 +101,7 @@ function Editor() {
                     <Button className='mb-4' onClick={handleExport}> Export </Button>
 
                 </div>
-                <div className='grid grid-cols-6 gap-7 mt-5'>
+                <div className='grid grid-cols-6 gap-7 mt-5 mb-5'>
                     <div >
                         <TrackList />
                     </div>
@@ -109,6 +110,43 @@ function Editor() {
                     </div>
                     <div className='col-span-2'>
                         <FrameConfig />
+                    </div>
+                </div>
+
+                <div className=' mt-10 border-t pt-4 border-primary-200 p-2'>
+                    <h2 className='text-base md:text-lg lg:text-xl font-bol text-primary-500 mb-2'>Information video</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-base sm:text-sm text-gray-700 
+                            ">
+
+                        <div className="space-y-2">
+                            <p><span className="font-semibold">📝 Title:</span> {videoFrames?.title}</p>
+                            <p><span className="font-semibold">📚 Topic:</span> {videoFrames?.infoVideo?.topic}</p>
+                            <p><span className="font-semibold">🎨 Style:</span> {videoFrames?.infoVideo?.style?.name}</p>
+                        </div>
+
+                        <div className="space-y-2">
+                            <p><span className="font-semibold">🌐 Language:</span> {videoFrames?.infoVideo?.languages?.name}</p>
+                            <p><span className="font-semibold">🎤 Voice:</span> {videoFrames?.infoVideo?.voice?.name}</p>
+                            <p><span className="font-semibold">🕒 Duration:</span> {videoFrames?.infoVideo?.duration?.label}</p>
+                        </div>
+                        <div className="space-y-2">
+                            {(() => {
+                                const size = JSON.parse(videoFrames?.infoVideo?.video_size || '{}');
+                                return (
+                                    <p>
+                                        <span className="font-semibold">📏 Size:</span>{" "}
+                                        {size.aspect || 'N/A'} ({size.width}x{size.height})
+                                    </p>
+                                );
+                            })()}
+                            <p><span className="font-semibold">📅 Created at:</span> {formatDateTime(videoFrames?.infoVideo?.created_at)}</p>
+                            <p><span className="font-semibold">📅 Last updated at:</span> {formatDateTime(videoFrames?.infoVideo?.updated_at)}</p>
+                        </div>
+
+                        <div className="space-y-2">
+                            <p><span className="font-semibold">📌 Status:</span> {videoFrames?.infoVideo?.status}</p>
+
+                        </div>
                     </div>
                 </div>
             </div>

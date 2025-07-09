@@ -122,10 +122,6 @@ function CreateNew() {
         try {
             const res = await axios.post('/api/generate/preview-video', scriptData);
             const result = res.data;
-            // const result = "fake data for testing";
-            // const res = localStorage.getItem('video_data_1');
-            // const result = JSON.parse(res);
-            // console.log('Video generation response:', result);
             const infoVideo = {
                 id_cloud: result?.id_cloud,
                 title: result?.title || '',
@@ -136,6 +132,9 @@ function CreateNew() {
                 duration: result?.duration || null,
                 video_url: result?.video_url || null,
                 video_size: result?.video_size || { aspect: '9:16', width: 720, height: 1280 },
+                created_at: result?.created_at || new Date().toISOString(),
+                updated_at: result?.updated_at || new Date().toISOString(),
+                status: result?.status || 'preview',
 
             };
             const segments = convertToFrameList(result?.segments || []);
@@ -156,7 +155,6 @@ function CreateNew() {
 
         } catch (err) {
             console.error('Error when generate video:', err);
-            // Handle error, e.g., show error message
         }
         setLoading(false);
     }
@@ -165,7 +163,7 @@ function CreateNew() {
     return (
         <>
             <div className='py-10 px-16 flex flex-col '>
-                <h1 className='font-bold text-primary text-xl sm:text-2xl md:text-3xl lg:text-3xl text-center'>Create New</h1>
+                <h1 className='font-bold text-base sm:text-base md:text-xl lg:text-2xl text-primary'>Create New</h1>
 
                 <div className='mt-10 shadow pt-10 pb-5 px-16 border border-blue-400 rounded-lg bg-white w-full max-w-5xl'>
 
