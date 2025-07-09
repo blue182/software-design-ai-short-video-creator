@@ -12,6 +12,8 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { FileText, PenLine, Flame } from 'lucide-react';
+
 
 function SelectTopic({ onUserSelect, selected, hasError }) {
     const options = [
@@ -31,22 +33,21 @@ function SelectTopic({ onUserSelect, selected, hasError }) {
     const [loadingTrends, setLoadingTrends] = useState(false);
 
     useEffect(() => {
-        if (mode === "trends") {
-            setLoadingTrends(true);
-            fetch("http://localhost:8000/api/trends")
-                .then(res => res.json())
-                .then(data => {
-                    setTrends(data.keywords || []);
-                })
-                .catch(err => {
-                    console.error("Failed to fetch trends:", err);
-                    setTrends([]);
-                })
-                .finally(() => {
-                    setLoadingTrends(false);
-                });
-        }
-    }, [mode]);
+        setLoadingTrends(true);
+        fetch("http://localhost:8000/api/trends")
+            .then(res => res.json())
+            .then(data => {
+                setTrends(data.keywords || []);
+            })
+            .catch(err => {
+                console.error("Failed to fetch trends:", err);
+                setTrends([]);
+            })
+            .finally(() => {
+                setLoadingTrends(false);
+            });
+
+    }, []);
 
 
     return (
@@ -75,33 +76,36 @@ function SelectTopic({ onUserSelect, selected, hasError }) {
                 >
                     <ToggleGroupItem
                         value="predefined"
-                        className="px-6 py-4 border text-base font-bold
+                        className="px-6 py-4 border text-base font-bold flex items-center gap-2
                    rounded-l-sm rounded-r-none
                    data-[state=on]:bg-primary-50
                    data-[state=on]:border-primary
                    data-[state=on]:text-primary"
                     >
+                        <FileText className="w-5 h-5 text-fuchsia-500" />
                         Predefined Topic
                     </ToggleGroupItem>
 
                     <ToggleGroupItem
                         value="custom"
-                        className="px-6 py-4 border text-base font-bold
-                   rounded-r-sm rounded-l-none
+                        className="px-6 py-4 border text-base font-bold flex items-center gap-2
+                    rounded-r-none rounded-l-none
                    data-[state=on]:bg-primary-50
                    data-[state=on]:border-primary
                    data-[state=on]:text-primary"
                     >
+                        <PenLine className="w-5 h-5 text-emerald-500" />
                         Custom Prompt
                     </ToggleGroupItem>
-                    <ToggleGroupItem 
-                        value="trends" 
-                        className="px-6 py-4 border text-base font-bold
+                    <ToggleGroupItem
+                        value="trends"
+                        className="px-6 py-4 border text-base font-bold flex items-center gap-2
                    rounded-r-sm rounded-l-none
                    data-[state=on]:bg-primary-50
                    data-[state=on]:border-primary
                    data-[state=on]:text-primary">
-                        Random Trends
+                        <Flame className="w-5 h-5 text-red-500" />
+                        Trending Topics
                     </ToggleGroupItem>
                 </ToggleGroup>
 

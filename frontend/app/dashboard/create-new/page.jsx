@@ -167,7 +167,7 @@ function CreateNew() {
             <div className='py-10 px-16 flex flex-col '>
                 <h1 className='font-bold text-primary text-xl sm:text-2xl md:text-3xl lg:text-3xl text-center'>Create New</h1>
 
-                <div className='mt-10 shadow py-5 px-16 border border-blue-400 rounded-lg bg-white w-full max-w-5xl'>
+                <div className='mt-10 shadow pt-10 pb-5 px-16 border border-blue-400 rounded-lg bg-white w-full max-w-5xl'>
 
                     {script ? (
                         <div className="mt-2">
