@@ -24,6 +24,12 @@ function SideNav() {
             path: '/account',
             icon: CircleUserRound
         },
+        {
+            id: 4,
+            name: 'View statistics',
+            path: '/dashboard/statistics',
+            icon: CircleUserRound
+        },
     ]
 
     const path = usePathname();
