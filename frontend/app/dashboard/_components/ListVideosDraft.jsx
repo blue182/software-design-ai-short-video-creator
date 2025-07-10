@@ -12,11 +12,10 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
 
-function ListVideosDraft() {
+function ListVideosDraft({ loadingVideoDraft, setLoadingVideoDraft }) {
     const { listVideos } = React.useContext(ListVideosContext);
     const videos = listVideos?.listVideoPreview || [];
     const [selectedVideo, setSelectedVideo] = useState(null);
-    const [loading, setLoading] = useState(false);
     const router = useRouter();
 
 
@@ -31,7 +30,7 @@ function ListVideosDraft() {
     // console.log("📹 List Videos Exported===========:", videos);
 
     const handleClick = async (video) => {
-        setLoading(true);
+        setLoadingVideoDraft(true);
         const videoId = video.id;
         console.log("🔍 Selected video:", videoId);
         const infoVideo = {
@@ -67,7 +66,7 @@ function ListVideosDraft() {
         } catch (err) {
             console.error('❌ Failed to fetch segments:', err);
         } finally {
-            setLoading(false);
+            setLoadingVideoDraft(false);
         }
     };
 
@@ -113,7 +112,6 @@ function ListVideosDraft() {
 
                 ))}
             </div>
-
         </div>
     );
 }

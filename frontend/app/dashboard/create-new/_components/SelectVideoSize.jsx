@@ -17,8 +17,8 @@ function SelectVideoSize({ selected, onUserSelect }) {
 
     return (
         <div >
-            <h2 className="font-bold text-primary text-lg sm:text-md md:text-lg lg:text-xl">Video Size</h2>
-            <p className="text-sm sm:text-base md:text-md text-gray-500 mb-2">Choose the aspect ratio for your video</p>
+            <h2 className="font-bold text-primary text-base sm:text-base md:text-lg lg:text-xl">Video Size</h2>
+            <p className="text-sm sm:text-sm md:text-base text-gray-500 mb-2">Choose the aspect ratio for your video</p>
 
             <ToggleGroup
                 type="single"

@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import React from 'react'
 
@@ -8,9 +9,10 @@ function EmptyState() {
             <h2>You don't have any short video created</h2>
             <p className="text-gray-500">Create your first short video to get started.</p>
             <Link href={"/dashboard/create-new"}>
-                <button className="bg-primary text-white px-4 py-2 rounded-md hover:bg-purple-700 transition-colors">
+                <Button>
                     Create New Video
-                </button>
+                </Button>
+
             </Link>
         </div>
     )

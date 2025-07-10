@@ -52,15 +52,15 @@ function SelectTopic({ onUserSelect, selected, hasError }) {
 
     return (
         <div >
-            <h2 className="font-bold text-primary text-lg sm:text-md md:text-lg lg:text-xl">
+            <h2 className="font-bold text-primary text-base sm:text-base md:text-lg lg:text-xl">
                 Content
             </h2>
-            <p className="text-sm sm:text-base md:text-md text-gray-500 mb-2">
+            <p className="text-sm sm:text-sm md:text-base text-gray-500 mb-2">
                 Choose a content type or write your own
             </p>
 
             {/* Toggle Group to switch mode */}
-            <div className="flex flex-start">
+            <div className="flex gap-0 mt-2 mb-2 flex-wrap items-center justify-start">
                 <ToggleGroup
                     type="single"
                     value={mode}
@@ -68,18 +68,18 @@ function SelectTopic({ onUserSelect, selected, hasError }) {
                         if (!val) return;
                         setMode(val);
                         if (val === "predefined" && !options.includes(selected?.topic)) {
-                            // Reset if switching from custom with invalid topic
                             onUserSelect("topic", { topic: "", isCustomTopic: false });
                         }
                     }}
-                    className="flex gap-0 mt-2 mb-2"
+                    className="flex mt-2 mb-4 flex-wrap items-center justify-start"
+
                 >
                     <ToggleGroupItem
                         value="predefined"
-                        className="px-6 py-4 border text-base font-bold flex items-center gap-2
-                   rounded-l-sm rounded-r-none
+                        className="px-6 py-4 border text-sm md:text-base xl:text-lg  font-bold flex items-center gap-2
+                   rounded-sm
                    data-[state=on]:bg-primary-50
-                   data-[state=on]:border-primary
+                   data-[state=on]:border-primarytext-sm md:text-base xl:text-lg
                    data-[state=on]:text-primary"
                     >
                         <FileText className="w-5 h-5 text-fuchsia-500" />
@@ -88,19 +88,19 @@ function SelectTopic({ onUserSelect, selected, hasError }) {
 
                     <ToggleGroupItem
                         value="custom"
-                        className="px-6 py-4 border text-base font-bold flex items-center gap-2
-                    rounded-r-none rounded-l-none
+                        className="px-6 py-4 border text-sm md:text-base xl:text-lg font-bold flex items-center gap-2
+                    rounded-sm
                    data-[state=on]:bg-primary-50
                    data-[state=on]:border-primary
-                   data-[state=on]:text-primary"
+                   data-[state=on]:text-primary "
                     >
                         <PenLine className="w-5 h-5 text-emerald-500" />
                         Custom Prompt
                     </ToggleGroupItem>
                     <ToggleGroupItem
                         value="trends"
-                        className="px-6 py-4 border text-base font-bold flex items-center gap-2
-                   rounded-r-sm rounded-l-none
+                        className="px-6 py-4 border text-sm md:text-base xl:text-lg font-bold flex items-center gap-2
+                   rounded-sm
                    data-[state=on]:bg-primary-50
                    data-[state=on]:border-primary
                    data-[state=on]:text-primary">

@@ -162,10 +162,10 @@ function CreateNew() {
 
     return (
         <>
-            <div className='py-10 px-16 flex flex-col '>
-                <h1 className='font-bold text-base sm:text-base md:text-xl lg:text-2xl text-primary'>Create New</h1>
+            <div className='p-10 sm:p-5 flex flex-col justify-center items-center gap-5'>
+                <h1 className='font-bold text-base sm:text-xl md:text-xl lg:text-2xl text-primary text-center'>Create New Viral Video With AIzento</h1>
 
-                <div className='mt-10 shadow pt-10 pb-5 px-16 border border-blue-400 rounded-lg bg-white w-full max-w-5xl'>
+                <div className='mt-10 shadow pt-10 pb-5 p-10 border border-blue-400 rounded-lg bg-white w-full max-w-5xl'>
 
                     {script ? (
                         <div className="mt-2">
