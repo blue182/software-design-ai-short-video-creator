@@ -70,7 +70,7 @@ async def render_single_image(segment: dict, folder: str, VIDEO_WIDTH: int = 720
 
 # ==== Hàm chính để xử lý toàn bộ danh sách segment ====
 async def generate_and_upload_images(segments: list, folder: str = "generated/images", VIDEO_WIDTH: int = 720, VIDEO_HEIGHT: int = 1280) -> list:
-    tasks = [render_single_image(seg, folder, VIDEO_WIDTH, VIDEO_HEIGHT) for seg in segments]
+    tasks = [render_single_image(seg, folder, VIDEO_WIDTH=VIDEO_WIDTH, VIDEO_HEIGHT=VIDEO_HEIGHT) for seg in segments]
     updated_segments = await asyncio.gather(*tasks)
     return updated_segments
 

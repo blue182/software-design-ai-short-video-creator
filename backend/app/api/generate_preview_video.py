@@ -57,6 +57,7 @@ async def generate_video(request: FullScriptRequest):
                 id=segment['id'],
                 segment_index=segment['segment_index'],
                 text=segment['text'],
+                audio_text=segment['audio_text'],
                 start_time=segment['start_time'],
                 end_time=segment['end_time'],
                 duration=segment['duration'],

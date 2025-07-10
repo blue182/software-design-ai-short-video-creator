@@ -9,7 +9,7 @@ export async function POST(req) {
     const videoData = {
         ...infoVideo,
         userId,
-        status: 'pending', // default status
+        status: 'preview', // default status
     };
 
 

@@ -6,9 +6,7 @@ const { voices } = require('@/configs/schemas/voices');
 const { languages } = require('@/configs/schemas/languages');
 const { durations } = require('@/configs/schemas/durations');
 const { segments } = require('@/configs/schemas/segments');
-const { eq } = require('drizzle-orm');
-const { and } = require('drizzle-orm');
-
+const { eq, desc, and } = require('drizzle-orm');
 
 
 async function createVideo(videoData) {
@@ -75,6 +73,7 @@ async function insertSegments(videoId, segmentsData) {
                 video_id: videoId,
                 segment_index: Number.isInteger(segment.segment_index) ? segment.segment_index : index,
                 text: segment.text ?? '',
+                audio_text: segment.audio_text ?? null,
                 description_image: segment.description_image ?? null,
                 image_url: segment.image_url ?? null,
                 audio_url: audioUrl ?? null,
@@ -127,6 +126,31 @@ async function getSegmentsByVideoId(videoId) {
     }
 }
 
+async function updateUpdatedAt(videoId) {
+    const video_id = Number(videoId);
+
+    if (!video_id) {
+        throw new Error('videoId is required');
+    }
+    try {
+        const result = await db
+            .update(videos)
+            .set({ updated_at: new Date() })
+            .where(eq(videos.id, video_id))
+            .returning({ id: videos.id });
+        const success = result.length > 0;
+        if (success) {
+            console.log('✅ Updated video updated_at successfully for video ID:', video_id);
+        }
+        else {
+            console.warn('⚠️ No video found with the given ID:', video_id);
+        }
+        return success;
+    } catch (err) {
+        console.error('❌ Error updating video updated_at:', err);
+        return false;
+    }
+}
 
 async function updateExportVideoUrl(videoId, videoUrl) {
     const video_id = Number(videoId);
@@ -137,7 +161,7 @@ async function updateExportVideoUrl(videoId, videoUrl) {
     try {
         const result = await db
             .update(videos)
-            .set({ export_video_url: videoUrl, status: 'exported' })
+            .set({ export_video_url: videoUrl, status: 'exported', updated_at: new Date() })
             .where(eq(videos.id, video_id))
             .returning({ id: videos.id });
 
@@ -192,7 +216,8 @@ async function getPreviewVideosWithFirstSegment(userId) {
             .leftJoin(voices, eq(videos.voice_id, voices.id))
             .leftJoin(languages, eq(videos.language_id, languages.id))
             .leftJoin(durations, eq(videos.duration_id, durations.id))
-            .where(and(eq(videos.user_id, userId), eq(videos.status, 'preview')));
+            .where(and(eq(videos.user_id, userId), eq(videos.status, 'preview')))
+            .orderBy(desc(videos.updated_at));
 
         const result = [];
 
@@ -245,7 +270,8 @@ async function getExportedVideos(userId) {
             .leftJoin(voices, eq(videos.voice_id, voices.id))
             .leftJoin(languages, eq(videos.language_id, languages.id))
             .leftJoin(durations, eq(videos.duration_id, durations.id))
-            .where(and(eq(videos.user_id, userId), eq(videos.status, 'exported')));
+            .where(and(eq(videos.user_id, userId), eq(videos.status, 'exported')))
+            .orderBy(desc(videos.updated_at));
 
         return exportedVideos.map(row => ({
             ...row.video,
@@ -260,6 +286,57 @@ async function getExportedVideos(userId) {
     }
 }
 
+async function updateSegmentsForVideo(videoId, segmentsData) {
+    if (!videoId || !Array.isArray(segmentsData)) {
+        throw new Error('Missing videoId or segmentsData must be an array.');
+    }
+
+    try {
+
+        await db.delete(segments).where(eq(segments.video_id, videoId));
+
+
+        const formattedSegments = await Promise.all(
+            segmentsData.map(async (segment, index) => {
+                const audioUrl = typeof segment.audio_url?.then === 'function'
+                    ? await segment.audio_url
+                    : segment.audio_url;
+
+                return {
+                    video_id: videoId,
+                    segment_index: Number.isInteger(segment.segment_index) ? segment.segment_index : index,
+                    text: segment.text ?? '',
+                    audio_text: segment.audio_text ?? null,
+                    description_image: segment.description_image ?? null,
+                    image_url: segment.image_url ?? null,
+                    audio_url: audioUrl ?? null,
+
+                    start_time: typeof segment.start_time === 'number' ? segment.start_time : 0,
+                    end_time: typeof segment.end_time === 'number' ? segment.end_time : 1,
+                    duration: typeof segment.duration === 'number' ? segment.duration : 1,
+
+                    animation: segment.animation ?? null,
+                    font_size: Number.isInteger(segment.font_size) ? segment.font_size : 20,
+                    stroke_color: segment.stroke_color ?? 'black',
+                    stroke_width: Number.isInteger(segment.stroke_width) ? segment.stroke_width : 2,
+                    subtitle_bg: segment.subtitle_bg ?? 'rgba(0,0,0,0.5)',
+                    subtitle_color: segment.subtitle_color ?? 'white',
+                    subtitle_enabled: typeof segment.subtitle_enabled === 'boolean' ? segment.subtitle_enabled : false,
+                    space_bottom: Number.isInteger(segment.space_bottom) ? segment.space_bottom : 0,
+
+                    text_styles: JSON.stringify(segment.text_styles ?? []),
+                };
+            })
+        );
+
+        await db.insert(segments).values(formattedSegments);
+
+    } catch (err) {
+        console.error('❌ Failed to update segments:', err);
+        throw err;
+    }
+}
+
 
 
 module.exports = {
@@ -269,5 +346,7 @@ module.exports = {
     getSegmentsByVideoId,
     getPreviewVideosWithFirstSegment,
     getExportedVideos,
-    getAllSegmentsByVideoId
+    getAllSegmentsByVideoId,
+    updateSegmentsForVideo,
+    updateUpdatedAt,
 };

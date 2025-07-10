@@ -15,7 +15,8 @@ const defaultFrame = {
     stroke_width: 3,
     font_size: 20,
     animation: 'zoom-out',
-    space_bottom: 0,
+    space_bottom: 10,
+    audio_text: '',
 
 }
 
@@ -30,7 +31,7 @@ export function convertToFrameList(rawData) {
         stroke_width: 3,
         font_size: 20,
         animation: 'fade',
-        space_bottom: 0,
+        space_bottom: 10,
         description_image: '',
 
     };
@@ -45,6 +46,7 @@ export function convertToFrameList(rawData) {
             image_url: segment.image_url || defaultFrameSettings.image_url,
             audio_url: segment.audio_url || null,
             text: segment.text || defaultFrameSettings.text,
+            audio_text: segment.audio_text || '',
             preview_url: segment.preview_url || segment.image_url || defaultFrameSettings.image_url,
             subtitle_color: segment.subtitle_color || defaultFrameSettings.subtitle_color,
             subtitle_bg: segment.subtitle_bg || defaultFrameSettings.subtitle_bg,

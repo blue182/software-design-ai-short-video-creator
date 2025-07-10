@@ -10,10 +10,15 @@ async def generate_full_script(request: FullScriptRequest):
         prompt = build_prompt_full_script(request)
         data = call_gemini(prompt)
 
+        full_script = data.get("full_script", [])
+        for segment in full_script:
+            if "text" in segment:
+                segment["audio_text"] = segment["text"]
+
         return {           
             "topic": request.topic,
             "title": request.title or data.get("title", ""),
-            "full_script": data.get("full_script", []),
+            "full_script": full_script,
             "duration_seconds": request.duration,
             "language": request.language,
             "voice": request.voice,            

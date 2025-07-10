@@ -37,7 +37,7 @@ function TrackList() {
     return (
         <div className='p-3 bg-primary-50 rounded-lg'>
             <div className='max-h-[70vh] overflow-auto p-1 scrollbar-hide'>
-                {videoFrames?.framesList.map((frame, index) => (
+                {videoFrames?.framesList?.map((frame, index) => (
                     <div key={index}
                         className={`flex flex-col items-center mb-2 border-b border-primary-200 pb-2 mt-3 p-2 rounded-lg ${selectedFrame === index ? 'bg-white' : 'bg-transparent hover:bg-primary-100 cursor-pointer'} `}
                         onClick={() => setSelectedFrame(index)}>

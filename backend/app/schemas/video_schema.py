@@ -6,6 +6,7 @@ class VideoSegment(BaseModel):
     id: int
     segment_index: int
     text: str
+    audio_text: str = None
     start_time: float
     end_time: float
     duration: float

@@ -17,7 +17,7 @@ const videos = pgTable('videos', {
     voice_id: integer('voice_id').references(() => voices.id),
     language_id: integer('language_id').references(() => languages.id),
     duration_id: integer('duration_id').references(() => durations.id),
-    status: varchar('status', { length: 20 }), // e.g., 'pending', 'processing', 'completed', 'failed', "deleted"
+    status: varchar('status', { length: 20 }),
     export_video_url: text('export_video_url'),
     background_music_url: text('background_music_url'),
     created_at: timestamp('created_at').defaultNow(),

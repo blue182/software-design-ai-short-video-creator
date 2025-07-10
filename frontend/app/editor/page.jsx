@@ -12,6 +12,12 @@ import CustomLoading from '@/components/CustomLoading'
 import { UserDetailContext } from '../_contexts/UserDetailContext'
 import { convertToFrameList } from '@/helpers/frame-utils'
 import formatDateTime from '@/helpers/format-date'
+import parseVideoSize from '@/helpers/parseVideoSize'
+import { useRouter } from 'next/navigation'
+import { segments } from '@/configs/schemas/segments'
+import LoadingDataVideo from '@/components/LoadingDataVideo'
+import ProcessingVideo from '@/components/ProcessingVideo'
+import SideNav from '../dashboard/_components/SideNav'
 
 
 
@@ -25,8 +31,26 @@ function Editor() {
     const [infoData, setInfoData] = React.useState({});
     const [frameList, setFrameList] = React.useState([])
     const [mounted, setMounted] = React.useState(false);
+    const router = useRouter();
+    const [defaultLoading, setDefaultLoading] = React.useState(true);
+    const [isMobileSidebarOpen, setMobileSidebarOpen] = React.useState(false);
 
     React.useEffect(() => {
+        const handleBeforeUnload = (event) => {
+            event.preventDefault();
+            event.returnValue = '';
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, []);
+
+
+    React.useEffect(() => {
+
         const savedData = localStorage.getItem('video_data');
         if (savedData) {
             try {
@@ -37,6 +61,7 @@ function Editor() {
             }
         }
         setMounted(true);
+        setDefaultLoading(false);
     }, []);
 
     if (!mounted) return null;
@@ -54,14 +79,13 @@ function Editor() {
 
             const { videoUrl } = res.data;
 
-
-
             if (videoUrl) {
 
                 try {
                     const response = await axios.post('/api/videos/save-video-export', {
                         videoId: videoFrames?.videoId || 'temporary-id',
                         videoUrl: videoUrl,
+                        segments: videoFrames?.framesList || [],
                     });
 
                     if (response.data.ok) {
@@ -91,75 +115,130 @@ function Editor() {
         setLoading(false);
     };
 
+    const handleSave = async () => {
+        console.log('click save');
+        setLoading(true);
+        try {
+            const res = await axios.post('/api/videos/save-video-preview', {
+                videoId: videoFrames?.videoId || 'temporary-id',
+                segments: videoFrames?.framesList || [],
+
+            });
+
+            if (res.data.ok) {
+                setLoading(false);
+                setVideoFrames({});
+                router.push('/dashboard');
+            } else {
+                console.error('Failed to save video:', res.data.error);
+                alert('Failed to save video. Check console for details.');
+            }
+        }
+        catch (err) {
+            console.error('Save failed:', err);
+            alert('Save failed. Check console for details.');
+        }
+
+    }
+
 
     return (
         <div>
-            <Header />
-            <div className='p-5 mt-2 ps-10 pe-10'>
-                <div className='flex items-center justify-between mb-4'>
-                    <h2 className='text-2xl font-bold mb-4 text-primary'>Editor Video</h2>
-                    <Button className='mb-4' onClick={handleExport}> Export </Button>
-
+            <div>
+                <div>
+                    <Header onToggleSidebar={() => setMobileSidebarOpen(!isMobileSidebarOpen)} />
                 </div>
-                <div className='grid grid-cols-6 gap-7 mt-5 mb-5'>
-                    <div >
-                        <TrackList />
-                    </div>
-                    <div className='col-span-3 w-full'>
-                        <RemotionPlayer />
-                    </div>
-                    <div className='col-span-2'>
-                        <FrameConfig />
+
+                <div
+                    className={`fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300 md:hidden ${isMobileSidebarOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
+                    onClick={() => setMobileSidebarOpen(false)}
+                >
+                    <div
+                        className={`pt-[80px] absolute left-0 top-0 h-full w-64 bg-white shadow-lg transition-transform duration-300 transform ${isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <SideNav />
                     </div>
                 </div>
 
-                <div className=' mt-10 border-t pt-4 border-primary-200 p-2'>
-                    <h2 className='text-base md:text-lg lg:text-xl font-bol text-primary-500 mb-2'>Information video</h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-base sm:text-sm text-gray-700 
-                            ">
+                <div className='p-5 mt-2 ps-10 pe-10'>
+                    <div className='flex items-center justify-between mb-4'>
+                        <h2 className='text-2xl font-bold mb-4 text-primary'>Editor Video</h2>
 
-                        <div className="space-y-2">
-                            <p><span className="font-semibold">📝 Title:</span> {videoFrames?.title}</p>
-                            <p><span className="font-semibold">📚 Topic:</span> {videoFrames?.infoVideo?.topic}</p>
-                            <p><span className="font-semibold">🎨 Style:</span> {videoFrames?.infoVideo?.style?.name}</p>
+                        <div className='flex gap-5'>
+                            <Button variant="outline" className='mb-4' onClick={handleSave}> Save </Button>
+                            <Button className='mb-4' onClick={handleExport}> Export </Button>
                         </div>
 
-                        <div className="space-y-2">
-                            <p><span className="font-semibold">🌐 Language:</span> {videoFrames?.infoVideo?.languages?.name}</p>
-                            <p><span className="font-semibold">🎤 Voice:</span> {videoFrames?.infoVideo?.voice?.name}</p>
-                            <p><span className="font-semibold">🕒 Duration:</span> {videoFrames?.infoVideo?.duration?.label}</p>
-                        </div>
-                        <div className="space-y-2">
-                            {(() => {
-                                const size = JSON.parse(videoFrames?.infoVideo?.video_size || '{}');
-                                return (
-                                    <p>
-                                        <span className="font-semibold">📏 Size:</span>{" "}
-                                        {size.aspect || 'N/A'} ({size.width}x{size.height})
-                                    </p>
-                                );
-                            })()}
-                            <p><span className="font-semibold">📅 Created at:</span> {formatDateTime(videoFrames?.infoVideo?.created_at)}</p>
-                            <p><span className="font-semibold">📅 Last updated at:</span> {formatDateTime(videoFrames?.infoVideo?.updated_at)}</p>
-                        </div>
 
-                        <div className="space-y-2">
-                            <p><span className="font-semibold">📌 Status:</span> {videoFrames?.infoVideo?.status}</p>
+                    </div>
+                    <div className='grid grid-cols-6 gap-7 mt-5 mb-5'>
+                        <div >
+                            <TrackList />
+                        </div>
+                        <div className='col-span-3 w-full'>
+                            <RemotionPlayer />
+                        </div>
+                        <div className='col-span-2'>
+                            <FrameConfig />
+                        </div>
+                    </div>
 
+                    <div className=' mt-10 border-t pt-4 border-primary-200 p-2'>
+                        <h2 className='text-base md:text-lg lg:text-xl font-bol text-primary-500 mb-2'>Information video</h2>
+                        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-base sm:text-sm text-gray-700 
+                                ">
+
+                            <div className="space-y-2">
+                                <p><span className="font-semibold">📝 Title:</span> {videoFrames?.title}</p>
+                                <p><span className="font-semibold">📚 Topic:</span>
+                                    {
+                                        typeof videoFrames?.infoVideo?.topic === "string"
+                                            ? videoFrames.infoVideo.topic
+                                            : videoFrames?.infoVideo?.topic?.topic || "N/A"
+                                    }
+                                </p>
+                                <p><span className="font-semibold">🎨 Style:</span> {videoFrames?.infoVideo?.style?.name || videoFrames?.infoVideo?.style?.style}</p>
+                            </div>
+
+                            <div className="space-y-2">
+                                <p><span className="font-semibold">🌐 Language:</span> {videoFrames?.infoVideo?.languages?.name || videoFrames?.infoVideo?.languages?.languages}</p>
+                                <p><span className="font-semibold">🎤 Voice:</span> {videoFrames?.infoVideo?.voice?.name || videoFrames?.infoVideo?.voice?.voice}</p>
+                                <p><span className="font-semibold">🕒 Duration:</span> {videoFrames?.infoVideo?.duration?.value || videoFrames?.infoVideo?.duration?.seconds}s</p>
+                            </div>
+                            <div className="space-y-2">
+                                {(() => {
+                                    const size = parseVideoSize(videoFrames?.infoVideo?.video_size);
+                                    return (
+                                        <p>
+                                            <span className="font-semibold">📏 Size:</span>{" "}
+                                            {size?.aspect || 'N/A'} ({size?.width}x{size?.height})
+                                        </p>
+                                    );
+                                })()}
+                                <p><span className="font-semibold">📅 Created at:</span> {formatDateTime(videoFrames?.infoVideo?.created_at)}</p>
+                                <p><span className="font-semibold">📅 Last updated at:</span> {formatDateTime(videoFrames?.infoVideo?.updated_at)}</p>
+                            </div>
+
+                            <div className="space-y-2">
+                                <p><span className="font-semibold">📌 Status:</span> {videoFrames?.infoVideo?.status}</p>
+
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                {videoUrl && (
+                    <VideoExportDialog videoUrl={videoUrl} title={videoFrames.title} />
+                )}
+
+                {loading && (
+                    <ProcessingVideo loading={loading} />
+                )}
+
+
             </div>
-
-            {videoUrl && (
-                <VideoExportDialog videoUrl={videoUrl} title={videoFrames.title} />
-            )}
-
-            {loading && (
-                <CustomLoading loading={loading} />
-            )}
-
-
+            <LoadingDataVideo defaultLoading={defaultLoading} />
         </div>
     )
 }

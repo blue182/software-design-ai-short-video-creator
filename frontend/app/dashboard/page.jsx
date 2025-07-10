@@ -65,6 +65,8 @@ function Dashboard() {
         listVideos?.listVideoExported?.length === 0 &&
         listVideos?.listVideoPreview?.length === 0;
 
+    console.log("List Videos:", listVideos);
+
     return (
         <div className="md:px-10 mt-5 py-3">
             <div className="flex sm:items-center justify-between gap-4 mb-6 border-b border-primary-300 pb-4">

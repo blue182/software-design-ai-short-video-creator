@@ -34,7 +34,7 @@ function SelectTopic({ onUserSelect, selected, hasError }) {
 
     useEffect(() => {
         setLoadingTrends(true);
-        fetch("http://localhost:8000/api/trends")
+        fetch("http://localhost:8000/api/trends/")
             .then(res => res.json())
             .then(data => {
                 setTrends(data.keywords || []);
