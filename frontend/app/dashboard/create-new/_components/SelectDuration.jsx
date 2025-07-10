@@ -7,6 +7,7 @@ import {
     ToggleGroupItem,
 } from "@/components/ui/toggle-group"
 import axios from '@/lib/axios';
+import LoadingData from '@/components/LoadingData';
 
 const defaultDurations = [
     { id: 1, seconds: 15, label: '15s' },
@@ -18,8 +19,10 @@ const defaultDurations = [
 function SelectDuration({ onUserSelect, selected, hasError }) {
     const [optionDurations, setOptionDurations] = useState([]);
     const hasInitialized = useRef(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+
         axios.get('/durations')
             .then((response) => {
                 const durations = response.data;
@@ -30,6 +33,7 @@ function SelectDuration({ onUserSelect, selected, hasError }) {
                 // fallback nếu lỗi
                 setOptionDurations(defaultDurations);
             });
+        setLoading(false);
     }, []);
 
     // fallback nếu API chưa trả về
@@ -40,29 +44,33 @@ function SelectDuration({ onUserSelect, selected, hasError }) {
         }
     }
 
+
     return (
         <div >
-            <h2 className="font-bold text-primary text-lg sm:text-md md:text-lg lg:text-xl">Duration</h2>
-            <p className="text-sm sm:text-base md:text-md text-gray-500 mb-2">Select the duration of your video</p>
+            <h2 className="font-bold text-primary text-base sm:text-base md:text-lg lg:text-xl">Duration</h2>
+            <p className="text-sm sm:text-sm md:text-base text-gray-500 mb-2">Select the duration of your video</p>
 
-            <div className={`flex flex-col gap-4 py-2 ${hasError ? 'border border-red-500 p-2 rounded-lg' : ''}`}>
-                <ToggleGroup
-                    type="single"
-                    variant="outline"
-                    value={selected?.value?.toString() || ''}
-                    onValueChange={(val) => {
-                        if (!val) return;
-                        const option = optionDurations.find(opt => opt.seconds.toString() === val);
-                        if (!option) return;
-                        onUserSelect('duration', { value: option.seconds, id: option.id });
-                    }}
-                    className="flex gap-4 py-1 flex-wrap"
-                >
-                    {optionDurations.map((option) => (
-                        <ToggleGroupItem
-                            key={option.id}
-                            value={option.seconds.toString()}
-                            className={`
+            {loading ? (
+                <LoadingData />) :
+                (
+                    <div className={`flex flex-col gap-4 py-2 ${hasError ? 'border border-red-500 p-2 rounded-lg' : ''}`}>
+                        <ToggleGroup
+                            type="single"
+                            variant="outline"
+                            value={selected?.value?.toString() || ''}
+                            onValueChange={(val) => {
+                                if (!val) return;
+                                const option = optionDurations.find(opt => opt.seconds.toString() === val);
+                                if (!option) return;
+                                onUserSelect('duration', { value: option.seconds, id: option.id });
+                            }}
+                            className="flex gap-4 py-1 flex-wrap"
+                        >
+                            {optionDurations.map((option) => (
+                                <ToggleGroupItem
+                                    key={option.id}
+                                    value={option.seconds.toString()}
+                                    className={`
                                 px-6 py-3 rounded-lg border-2 text-base font-medium
                                 border-gray-300
                                 data-[state=on]:bg-primary-50
@@ -70,12 +78,13 @@ function SelectDuration({ onUserSelect, selected, hasError }) {
                                 data-[state=on]:text-primary
                                 transition-all duration-200
                             `}
-                        >
-                            {option.label}
-                        </ToggleGroupItem>
-                    ))}
-                </ToggleGroup>
-            </div>
+                                >
+                                    {option.label}
+                                </ToggleGroupItem>
+                            ))}
+                        </ToggleGroup>
+                    </div>
+                )}
 
             {hasError && (
                 <p className="text-red-500 text-sm mt-2">Please select a duration.</p>
