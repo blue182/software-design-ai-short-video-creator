@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select"
 import { VideoFrameContext } from '@/app/_contexts/VideoFrameContext';
 
-function RemotionPlayer() {
+function RemotionPlayer({ listImageUserUpload, listAudioUserUpload }) {
     const { videoFrames, setVideoFrames } = React.useContext(VideoFrameContext);
     const [screenSize, setScreenSize] = React.useState({
         width: 300,
@@ -106,6 +106,8 @@ function RemotionPlayer() {
                             }}
                             inputProps={{
                                 frameList: videoFrames.framesList,
+                                listImageUserUpload: listImageUserUpload,
+                                listAudioUserUpload: listAudioUserUpload,
                             }}
                         />
                     )}

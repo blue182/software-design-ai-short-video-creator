@@ -34,6 +34,8 @@ function Editor() {
     const router = useRouter();
     const [defaultLoading, setDefaultLoading] = React.useState(true);
     const [isMobileSidebarOpen, setMobileSidebarOpen] = React.useState(false);
+    const [listAudioUserUpload, setListAudioUserUpload] = React.useState([]);
+    const [listImageUserUpload, setListImageUserUpload] = React.useState([]);
 
     React.useEffect(() => {
         const handleBeforeUnload = (event) => {
@@ -67,6 +69,39 @@ function Editor() {
     if (!mounted) return null;
 
     console.log("📹 Video Frames:", videoFrames);
+
+    const updateFramesListBeforeProceed = async () => {
+        // Kiểm tra nếu không có gì để update thì bỏ qua
+        if (!videoFrames?.framesList || (!listImageUserUpload && !listAudioUserUpload)) return;
+
+        const updatedSegments = videoFrames?.framesList.map((segment) => {
+            const index = segment.segment_index;
+
+            const updatedImage = listImageUserUpload?.[index]?.url;
+            const updatedAudio = listAudioUserUpload?.[index];
+
+            return {
+                ...segment,
+                ...(updatedImage && { image_url: updatedImage }),
+                ...(updatedAudio && {
+                    audio_url: typeof updatedAudio === 'string'
+                        ? updatedAudio
+                        : URL.createObjectURL(updatedAudio),
+                }),
+            };
+        });
+
+        console.log("Updated segments:", updatedSegments);
+
+        setVideoFrames({
+            ...videoFrames,
+            framesList: updatedSegments,
+        });
+
+        return updatedSegments;
+    };
+
+
 
     const handleExport = async () => {
         console.log('click export');
@@ -118,10 +153,12 @@ function Editor() {
     const handleSave = async () => {
         console.log('click save');
         setLoading(true);
+        const updateSegments = await updateFramesListBeforeProceed();
+
         try {
             const res = await axios.post('/api/videos/save-video-preview', {
                 videoId: videoFrames?.videoId || 'temporary-id',
-                segments: videoFrames?.framesList || [],
+                segments: updateSegments || [],
 
             });
 
@@ -141,6 +178,8 @@ function Editor() {
 
     }
 
+    // console.log("listAudioUserUpload:", listAudioUserUpload);
+    // console.log("listImageUserUpload:", listImageUserUpload);
 
     return (
         <div>
@@ -174,13 +213,16 @@ function Editor() {
                     </div>
                     <div className='grid grid-cols-6 gap-7 mt-5 mb-5'>
                         <div >
-                            <TrackList />
+                            <TrackList listAudioUserUpload={listAudioUserUpload}
+                                listImageUserUpload={listImageUserUpload} />
                         </div>
                         <div className='col-span-3 w-full'>
-                            <RemotionPlayer />
+                            <RemotionPlayer listAudioUserUpload={listAudioUserUpload}
+                                listImageUserUpload={listImageUserUpload} />
                         </div>
                         <div className='col-span-2'>
-                            <FrameConfig />
+                            <FrameConfig listAudioUserUpload={listAudioUserUpload} setListAudioUserUpload={setListAudioUserUpload}
+                                listImageUserUpload={listImageUserUpload} setListImageUserUpload={setListImageUserUpload} />
                         </div>
                     </div>
 

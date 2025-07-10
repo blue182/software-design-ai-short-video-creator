@@ -3,6 +3,7 @@ import { updateSegmentsForVideo, updateUpdatedAt } from '@/lib/db/videos';
 export async function POST(req) {
     try {
         const { videoId, segments } = await req.json();
+        console.log("first segment:", segments[0]);
 
         if (!videoId || !Array.isArray(segments)) {
             return new Response(JSON.stringify({ error: 'Missing videoId or invalid segments format' }), {
