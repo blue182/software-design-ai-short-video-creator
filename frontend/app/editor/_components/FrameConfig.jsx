@@ -19,6 +19,8 @@ import SelectAnimationField from './SelectAnimationField'
 function FrameConfig() {
     const { videoFrames, setVideoFrames } = React.useContext(VideoFrameContext);
     const [frame, setFrame] = React.useState([]);
+    const [showSpaceBottomSlider, setShowSpaceBottomSlider] = React.useState(false);
+
 
 
     React.useEffect(() => {
@@ -98,6 +100,7 @@ function FrameConfig() {
 
                         {frame?.subtitle_enabled && (
                             <div className="mt-4 space-y-4">
+                                <TextAreaBox frame={frame} handleInputChange={(value) => handleInputChange('text', value)} />
                                 <SliderField
                                     label="Font Size"
                                     defaultValue={frame?.font_size || 20}
@@ -119,18 +122,21 @@ function FrameConfig() {
                                         handleInputChange('stroke_width', value)
                                     }
                                     maxValue={20}
-                                    step={0.5}
+                                    step={1}
                                 />
 
-                                <SliderField
-                                    label="Space Bottom"
-                                    defaultValue={frame?.space_bottom || 20}
-                                    handleInputChange={(value) =>
-                                        handleInputChange('space_bottom', value)
-                                    }
-                                    maxValue={displayedHeight}
-                                    step={5}
-                                />
+                                {showSpaceBottomSlider && (
+                                    <SliderField
+                                        label="Space Bottom"
+                                        defaultValue={frame?.space_bottom || 20}
+                                        handleInputChange={(value) =>
+                                            handleInputChange('space_bottom', value)
+                                        }
+                                        maxValue={displayedHeight}
+                                        step={5}
+                                    />
+                                )}
+
 
                                 <ToggleGroupField
                                     defaultValue={frame?.text_styles || []}

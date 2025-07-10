@@ -7,6 +7,7 @@ router = APIRouter()
 
 @router.post("/", response_model=dict)
 async def export_video(request: ExportRequest):
+    print("Received export video request")
 
     data = request.segments
     id_cloud = request.id_cloud

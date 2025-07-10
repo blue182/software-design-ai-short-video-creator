@@ -42,7 +42,7 @@ def generate_subtitle_image(
     stroke_color="black",
     stroke_width=2,
     VIDEO_SIZE=(720, 1208),
-    space_bottom=20
+    space_bottom=10  # ✅ luôn cách mép dưới 10px
 ):
     if not text:
         text = " "
@@ -52,19 +52,16 @@ def generate_subtitle_image(
     bg_color = parse_color(bg_color)
     stroke_color = parse_color(stroke_color)
 
-
     # Font logic
     is_bold = "bold" in text_styles
     is_italic = "italic" in text_styles
 
-    if is_bold and is_italic:
-        font_variant = "bold_italic"
-    elif is_bold:
-        font_variant = "bold"
-    elif is_italic:
-        font_variant = "italic"
-    else:
-        font_variant = "regular"
+    font_variant = (
+        "bold_italic" if is_bold and is_italic else
+        "bold" if is_bold else
+        "italic" if is_italic else
+        "regular"
+    )
 
     font_path = FONT_MAP.get(font_variant, DEFAULT_FONT)
     font_prop = font_manager.FontProperties(fname=font_path)
@@ -74,7 +71,7 @@ def generate_subtitle_image(
     wrapped_text = textwrap.fill(text, width=max_chars_per_line)
     num_lines = wrapped_text.count('\n') + 1
 
-    line_height = int(font_size * 1.6)
+    line_height = int((font_size + 10) * 1.6)
     padding = 20
     text_box_height = num_lines * line_height + 2 * padding
     img_w = VIDEO_SIZE[0]

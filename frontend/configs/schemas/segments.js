@@ -8,6 +8,7 @@ const segments = pgTable('video_segments', {
     video_id: integer('video_id').references(() => videos.id),
     segment_index: integer('segment_index'),
     text: text('text').notNull(),
+    audio_text: text('audio_text'),
     description_image: text('description_image'),
     image_url: text('image_url'),
     audio_url: text('audio_url'),

@@ -13,7 +13,12 @@ const VIDEO_SIZE_OPTIONS = {
 }
 
 function SelectVideoSize({ selected, onUserSelect }) {
-    const [optionSize, setOptionSize] = React.useState([]);
+
+    useEffect(() => {
+        if (!selected?.aspect) {
+            onUserSelect('video_size', { aspect: "9:16", width: 720, height: 1280 });
+        }
+    }, [selected, onUserSelect]);
 
     return (
         <div >

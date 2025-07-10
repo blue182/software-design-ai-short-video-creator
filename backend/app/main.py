@@ -5,6 +5,13 @@ from app.api import generate_script
 from app.api import generate_video
 from app.api import export_video
 from app.api import generate_preview_video
+import PIL
+import PIL.Image
+
+if not hasattr(PIL.Image, 'ANTIALIAS'):
+    from PIL import Image
+    Image.ANTIALIAS = Image.Resampling.LANCZOS
+
 
 app = FastAPI(title="AI Short Video Creator API", version="1.0.0", description="API for creating short videos using AI technologies")           
 # CORS configuration

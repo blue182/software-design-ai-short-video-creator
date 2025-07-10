@@ -39,7 +39,7 @@ async def _generate_and_upload_segment(text: str, voice: str, index: int, folder
 async def generate_audio_segments(segments: list, voice_code: str, folder: str) -> list:
     tasks = [
         _generate_and_upload_segment(
-            seg["text"],
+            seg.get("audio_text") or seg.get("text"),
             voice_code,
             seg["segment_index"],
             folder,
