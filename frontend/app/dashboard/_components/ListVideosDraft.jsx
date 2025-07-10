@@ -10,10 +10,12 @@ import {
 import VideoExportDetail from './VideoExportDetail';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import ConfirmDeleteAlert from '@/components/ConfirmDeleteAlert';
+import { MoreVerticalIcon } from 'lucide-react';
 
 
 function ListVideosDraft({ loadingVideoDraft, setLoadingVideoDraft }) {
-    const { listVideos } = React.useContext(ListVideosContext);
+    const { listVideos, setListVideos } = React.useContext(ListVideosContext);
     const videos = listVideos?.listVideoPreview || [];
     const [selectedVideo, setSelectedVideo] = useState(null);
     const router = useRouter();
@@ -74,12 +76,33 @@ function ListVideosDraft({ loadingVideoDraft, setLoadingVideoDraft }) {
         <div className="mt-10">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
                 {videos.map((video, index) => (
+
                     <div
                         key={index}
                         className="group border rounded-lg overflow-hidden shadow hover:shadow-lg relative 
                             hover:scale-105 transition-all duration-300 cursor-pointer "
                         onClick={() => handleClick(video)}
                     >
+                        <div
+                            className="absolute top-2 right-2 z-10"
+                            onClick={(e) => e.stopPropagation()} // Ngăn mở chi tiết khi bấm nút này
+                        >
+                            <ConfirmDeleteAlert
+                                videoId={video.id}
+                                trigger={
+                                    <button className="p-1 hover:bg-primary-200 rounded-full bg-primary-50">
+                                        <MoreVerticalIcon className="w-5 h-5 text-gray-600" />
+                                    </button>
+                                }
+                                onDeleted={() => {
+                                    const updatedList = videos.filter(v => v.id !== video.id);
+                                    setListVideos(prev => ({
+                                        ...prev,
+                                        listVideoPreview: updatedList,
+                                    }));
+                                }}
+                            />
+                        </div>
                         <div className="overflow-hidden">
                             <img
                                 src={video?.firstSegment?.image_url}
@@ -88,6 +111,8 @@ function ListVideosDraft({ loadingVideoDraft, setLoadingVideoDraft }) {
                         </div>
 
                         <div className="p-2">
+
+
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild>

@@ -3,7 +3,7 @@ import { Noto_Sans_JP, Noto_Sans_KR, Noto_Sans_SC, Noto_Sans_Thai } from 'next/f
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import Provider from "./provider";
-
+import { Toaster } from "@/components/ui/sonner"
 
 export const metadata = {
   title: "Create Next App",
@@ -50,6 +50,7 @@ export default function RootLayout({ children }) {
           <Provider>
             {children}
           </Provider>
+          <Toaster />
         </body>
       </html>
 

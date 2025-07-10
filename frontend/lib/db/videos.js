@@ -337,7 +337,10 @@ async function updateSegmentsForVideo(videoId, segmentsData) {
     }
 }
 
-
+async function softDeleteVideo(videoId) {
+    const now = new Date();
+    await db.update(videos).set({ deleted_at: now, status: 'deleted' }).where(eq(videos.id, videoId));
+}
 
 module.exports = {
     createVideo,
@@ -349,4 +352,5 @@ module.exports = {
     getAllSegmentsByVideoId,
     updateSegmentsForVideo,
     updateUpdatedAt,
+    softDeleteVideo
 };

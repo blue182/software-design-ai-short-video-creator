@@ -1,6 +1,6 @@
 import { ListVideosContext } from '@/app/_contexts/ListVideosContext';
 import React, { useState } from 'react';
-import formatDateTime from '@/helpers/format-date'; // Ensure this path is correct
+import formatDateTime from '@/helpers/format-date';
 import {
     Tooltip,
     TooltipContent,
@@ -8,10 +8,12 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import VideoExportDetail from './VideoExportDetail';
+import ConfirmDeleteAlert from '@/components/ConfirmDeleteAlert';
+import { MoreVerticalIcon } from 'lucide-react';
 
 
 function ListVideosExported() {
-    const { listVideos } = React.useContext(ListVideosContext);
+    const { listVideos, setListVideos } = React.useContext(ListVideosContext);
     const videos = listVideos?.listVideoExported || [];
     const [selectedVideo, setSelectedVideo] = useState(null);
 
@@ -42,6 +44,18 @@ function ListVideosExported() {
 
                     >
                         <div className="overflow-hidden">
+                            <ConfirmDeleteAlert
+                                videoId={video.id}
+                                onDeleted={() => {
+
+                                    const updatedList = videos.filter(v => v.id !== video.id);
+                                    setListVideos(prev => ({
+                                        ...prev,
+                                        listVideoExported: updatedList,
+                                    }));
+                                }}
+                            />
+
                             <video
                                 src={video.export_video_url}
                                 controls
@@ -50,11 +64,60 @@ function ListVideosExported() {
                             />
                         </div>
 
-                        <div className="p-2" onClick={() => handleClick(video)}>
+                        {/* <div className="p-2" onClick={() => handleClick(video)}>
+                            <div  >
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <h3 className="text-lg font-semibold truncate cursor-help">
+                                                {video.title}
+                                            </h3>
+                                        </TooltipTrigger>
+                                        <TooltipContent side="top" align="center">
+                                            <p className="max-w-xs">{video.title}</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
+
+                                <p className="text-sm text-gray-600">
+                                    Duration: {video.duration?.seconds || "Unknown"}s
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                    Export at: {formatDateTime(video?.updated_at)}
+                                </p>
+                            </div>
+
+
+                        </div> */}
+
+                        <div className="p-2 relative" onClick={() => handleClick(video)}>
+                            {/* Nút ba chấm ở góc phải */}
+                            <div
+                                className="absolute top-2 right-2 z-10"
+                                onClick={(e) => e.stopPropagation()} // Ngăn mở chi tiết khi bấm nút này
+                            >
+                                <ConfirmDeleteAlert
+                                    videoId={video.id}
+                                    trigger={
+                                        <button className="p-1 hover:bg-gray-200 rounded-full">
+                                            <MoreVerticalIcon className="w-5 h-5 text-gray-600" />
+                                        </button>
+                                    }
+                                    onDeleted={() => {
+                                        const updatedList = videos.filter(v => v.id !== video.id);
+                                        setListVideos(prev => ({
+                                            ...prev,
+                                            listVideoExported: updatedList,
+                                        }));
+                                    }}
+                                />
+                            </div>
+
+                            {/* Nội dung thông tin video */}
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <h3 className="text-lg font-semibold truncate cursor-help">
+                                        <h3 className="text-lg font-semibold truncate cursor-help pr-6">
                                             {video.title}
                                         </h3>
                                     </TooltipTrigger>
@@ -71,6 +134,7 @@ function ListVideosExported() {
                                 Export at: {formatDateTime(video?.updated_at)}
                             </p>
                         </div>
+
                     </div>
 
                 ))}
