@@ -9,7 +9,7 @@ export async function POST(req) {
     const oauth2Client = new google.auth.OAuth2(
       process.env.YT_CLIENT_ID,
       process.env.YT_CLIENT_SECRET,
-      'https://developers.google.com/oauthplayground'
+      process.env.YT_REDIRECT_URI
     );
 
     oauth2Client.setCredentials({

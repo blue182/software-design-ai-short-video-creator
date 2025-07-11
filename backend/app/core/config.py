@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     # for random trends function
     SERPAPI_KEY: str
     RAPIDAPI_KEY: str
+
     class Config:
         env_file = ".env"
 
