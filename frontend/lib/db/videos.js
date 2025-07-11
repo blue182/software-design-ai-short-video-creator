@@ -178,6 +178,25 @@ async function updateExportVideoUrl(videoId, videoUrl) {
         return false;
     }
 }
+// db/queries/videos.js 
+async function updateYoutubeUrl(videoId, youtubeUrl) {
+    const id = Number(videoId);
+    if (!id || !youtubeUrl) throw new Error('videoId and youtubeUrl are required');
+
+    const result = await db
+        .update(videos)
+        .set({ ytb_url: youtubeUrl, updated_at: new Date() })
+        .where(eq(videos.id, id))
+        .returning({ id: videos.id });
+
+    const success = result.length > 0;
+    if (success) {
+        console.log('✅ ytb_url updated in database for video ID:', id);
+    } else {
+        console.warn('⚠️ No video found to update:', id);
+    }
+    return success;
+}
 
 async function getAllSegmentsByVideoId(videoId) {
     if (!videoId) {
@@ -346,6 +365,7 @@ module.exports = {
     createVideo,
     insertSegments,
     updateExportVideoUrl,
+    updateYoutubeUrl,
     getSegmentsByVideoId,
     getPreviewVideosWithFirstSegment,
     getExportedVideos,
