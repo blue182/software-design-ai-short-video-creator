@@ -1,5 +1,5 @@
 //  RemotionComposition.jsx
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
     AbsoluteFill,
     Sequence,
@@ -11,7 +11,7 @@ import AnimatedFrame from './AnimatedFrame';
 
 const FPS = 30;
 
-function RemotionComposition({ frameList }) {
+function RemotionComposition({ frameList, listImageUserUpload, listAudioUserUpload }) {
     const currentFrame = useCurrentFrame(); // 
     const { width, height } = useVideoConfig();
 
@@ -28,18 +28,22 @@ function RemotionComposition({ frameList }) {
 
                 trackFrame = toFrame;
 
+                const imageObj = listImageUserUpload?.[frame?.segment_index ?? index];
+                const image_url = imageObj?.url || frame?.image_url;
+
+                const audio_url = listAudioUserUpload?.[frame?.segment_index ?? index]?.url || frame?.audio_url;
                 return (
                     <Sequence key={frame.id || index} from={fromFrame} durationInFrames={duration}>
                         {isActive && (
                             <AnimatedFrame
-                                frame={frame}
+                                frame={{ ...frame, image_url }}
                                 duration={duration}
                                 frameIndex={localFrame}
                             />
                         )}
-                        {frame.audio_url && (
+                        {audio_url && (
                             <Audio
-                                src={frame.audio_url}
+                                src={audio_url}
                                 startFrom={0}
                                 endAt={duration}
                                 volume={1}

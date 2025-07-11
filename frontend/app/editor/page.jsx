@@ -26,14 +26,13 @@ function Editor() {
     const [loading, setLoading] = React.useState(false);
     const [videoUrl, setVideoUrl] = React.useState(null);
     const { userDetail, setUserDetail } = React.useContext(UserDetailContext);
-    const [idCloud, setIdCloud] = React.useState('');
-    const [title, setTitle] = React.useState('');
-    const [infoData, setInfoData] = React.useState({});
-    const [frameList, setFrameList] = React.useState([])
     const [mounted, setMounted] = React.useState(false);
     const router = useRouter();
     const [defaultLoading, setDefaultLoading] = React.useState(true);
     const [isMobileSidebarOpen, setMobileSidebarOpen] = React.useState(false);
+    const [listAudioUserUpload, setListAudioUserUpload] = React.useState([]);
+    const [listImageUserUpload, setListImageUserUpload] = React.useState([]);
+    const [listAudioTextChange, setListAudioTextChange] = React.useState([]);
 
     React.useEffect(() => {
         const handleBeforeUnload = (event) => {
@@ -68,9 +67,45 @@ function Editor() {
 
     console.log("📹 Video Frames:", videoFrames);
 
+    const updateFramesListBeforeProceed = async () => {
+        // Kiểm tra nếu không có gì để update thì bỏ qua
+        if (!videoFrames?.framesList || (!listImageUserUpload && !listAudioUserUpload)) return;
+
+        const updatedSegments = videoFrames?.framesList.map((segment) => {
+            const index = segment.segment_index;
+
+            const updatedImage = listImageUserUpload?.[index]?.url;
+            const updatedAudio = listAudioUserUpload?.[index]?.url;
+            const updatedText = listAudioTextChange?.[index];
+
+            return {
+                ...segment,
+                ...(updatedImage && { image_url: updatedImage }),
+                ...(updatedAudio && {
+                    audio_url: typeof updatedAudio === 'string'
+                        ? updatedAudio
+                        : URL.createObjectURL(updatedAudio),
+                }),
+                ...(updatedText && { audio_text: updatedText }),
+            };
+        });
+
+        console.log("Updated segments:", updatedSegments);
+
+        setVideoFrames({
+            ...videoFrames,
+            framesList: updatedSegments,
+        });
+
+        return updatedSegments;
+    };
+
+
+
     const handleExport = async () => {
         console.log('click export');
         setLoading(true);
+        const updateSegments = await updateFramesListBeforeProceed();
         try {
             const res = await axios.post('/api/export-video', {
                 id_cloud: videoFrames?.id_cloud || 'temporary-id',
@@ -118,10 +153,12 @@ function Editor() {
     const handleSave = async () => {
         console.log('click save');
         setLoading(true);
+        const updateSegments = await updateFramesListBeforeProceed();
+
         try {
             const res = await axios.post('/api/videos/save-video-preview', {
                 videoId: videoFrames?.videoId || 'temporary-id',
-                segments: videoFrames?.framesList || [],
+                segments: updateSegments || [],
 
             });
 
@@ -140,7 +177,6 @@ function Editor() {
         }
 
     }
-
 
     return (
         <div>
@@ -174,13 +210,17 @@ function Editor() {
                     </div>
                     <div className='grid grid-cols-6 gap-7 mt-5 mb-5'>
                         <div >
-                            <TrackList />
+                            <TrackList listAudioUserUpload={listAudioUserUpload}
+                                listImageUserUpload={listImageUserUpload} />
                         </div>
                         <div className='col-span-3 w-full'>
-                            <RemotionPlayer />
+                            <RemotionPlayer listAudioUserUpload={listAudioUserUpload}
+                                listImageUserUpload={listImageUserUpload} />
                         </div>
                         <div className='col-span-2'>
-                            <FrameConfig />
+                            <FrameConfig listAudioUserUpload={listAudioUserUpload} setListAudioUserUpload={setListAudioUserUpload}
+                                listImageUserUpload={listImageUserUpload} setListImageUserUpload={setListImageUserUpload}
+                                listAudioTextChange={listAudioTextChange} setListAudioTextChange={setListAudioTextChange} />
                         </div>
                     </div>
 

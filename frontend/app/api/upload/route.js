@@ -1,27 +1,31 @@
-import cloudinary from '@/lib/cloudinary';
+import { uploadToCloudFolder, deleteCloudinaryFileByUrl } from '@/lib/cloudinary';
 
 export async function POST(req) {
-    const data = await req.formData();
-    const file = data.get('file'); // 👈 file từ client
-
-    if (!file) {
-        return new Response(JSON.stringify({ error: 'No file uploaded' }), { status: 400 });
-    }
-
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-
     try {
-        const res = await new Promise((resolve, reject) => {
-            cloudinary.uploader.upload_stream({ folder: 'styles' }, (err, result) => {
-                if (err) reject(err);
-                else resolve(result);
-            }).end(buffer);
-        });
+        const formData = await req.formData();
+        const file = formData.get('file');
+        const id_cloud = formData.get('id_cloud');
+        const oldUrl = formData.get('oldUrl');
+        const type = formData.get('type') || 'image';
 
-        return Response.json({ url: res.secure_url });
-    } catch (err) {
-        console.error(err);
-        return new Response(JSON.stringify({ error: 'Upload failed' }), { status: 500 });
+        if (!file || !id_cloud) {
+            return new Response(JSON.stringify({ error: 'Missing file or id_cloud' }), { status: 400 });
+        }
+
+        if (oldUrl) {
+            await deleteCloudinaryFileByUrl(id_cloud, oldUrl, type);
+        }
+
+        const uploadedUrl = await uploadToCloudFolder(file, id_cloud, type);
+
+        if (!uploadedUrl) {
+            throw new Error('Upload failed');
+        }
+
+        return Response.json({ url: uploadedUrl });
+
+    } catch (error) {
+        console.error('❌ Upload handler error:', error);
+        return new Response(JSON.stringify({ error: error.message || 'Unknown error' }), { status: 500 });
     }
 }

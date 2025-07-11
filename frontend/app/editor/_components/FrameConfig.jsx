@@ -15,8 +15,9 @@ import { Switch } from '@/components/ui/switch'
 import ColorPickerField from './ColorPickerField'
 import ToggleGroupField from './ToggleGroupField'
 import SelectAnimationField from './SelectAnimationField'
+import ScriptEditor from './ScriptEditor'
 
-function FrameConfig() {
+function FrameConfig({ listImageUserUpload, listAudioUserUpload, setListImageUserUpload, setListAudioUserUpload, listAudioTextChange, setListAudioTextChange }) {
     const { videoFrames, setVideoFrames } = React.useContext(VideoFrameContext);
     const [frame, setFrame] = React.useState([]);
     const [showSpaceBottomSlider, setShowSpaceBottomSlider] = React.useState(false);
@@ -66,17 +67,9 @@ function FrameConfig() {
     return (
         <div className='p-3 bg-primary-50 rounded-lg'>
             <Accordion type="single" collapsible>
-                <AccordionItem value="item-1">
-                    <AccordionTrigger>
-                        <span className='flex items-center gap-4 text-base font-semibold'>
-                            <LetterText style={{ color: 'green' }} /> Text
-
-                        </span>
-                    </AccordionTrigger>
-                    <AccordionContent>
-                        <TextAreaBox frame={frame} handleInputChange={(value) => handleInputChange('text', value)} />
-                    </AccordionContent>
-                </AccordionItem>
+                <ScriptEditor frame={frame} handleInputChange={handleInputChange} listAudioUserUpload={listAudioUserUpload} setListAudioUserUpload={setListAudioUserUpload}
+                    listImageUserUpload={listImageUserUpload} setListImageUserUpload={setListImageUserUpload}
+                    listAudioTextChange={listAudioTextChange} setListAudioTextChange={setListAudioTextChange} />
             </Accordion>
             <Accordion type="single" collapsible>
                 <AccordionItem value="item-1">
