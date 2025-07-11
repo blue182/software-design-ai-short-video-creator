@@ -17,7 +17,7 @@ import ToggleGroupField from './ToggleGroupField'
 import SelectAnimationField from './SelectAnimationField'
 import ScriptEditor from './ScriptEditor'
 
-function FrameConfig({ listImageUserUpload, listAudioUserUpload, setListImageUserUpload, setListAudioUserUpload }) {
+function FrameConfig({ listImageUserUpload, listAudioUserUpload, setListImageUserUpload, setListAudioUserUpload, listAudioTextChange, setListAudioTextChange }) {
     const { videoFrames, setVideoFrames } = React.useContext(VideoFrameContext);
     const [frame, setFrame] = React.useState([]);
     const [showSpaceBottomSlider, setShowSpaceBottomSlider] = React.useState(false);
@@ -68,7 +68,8 @@ function FrameConfig({ listImageUserUpload, listAudioUserUpload, setListImageUse
         <div className='p-3 bg-primary-50 rounded-lg'>
             <Accordion type="single" collapsible>
                 <ScriptEditor frame={frame} handleInputChange={handleInputChange} listAudioUserUpload={listAudioUserUpload} setListAudioUserUpload={setListAudioUserUpload}
-                    listImageUserUpload={listImageUserUpload} setListImageUserUpload={setListImageUserUpload} />
+                    listImageUserUpload={listImageUserUpload} setListImageUserUpload={setListImageUserUpload}
+                    listAudioTextChange={listAudioTextChange} setListAudioTextChange={setListAudioTextChange} />
             </Accordion>
             <Accordion type="single" collapsible>
                 <AccordionItem value="item-1">

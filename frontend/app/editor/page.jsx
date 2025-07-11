@@ -26,16 +26,13 @@ function Editor() {
     const [loading, setLoading] = React.useState(false);
     const [videoUrl, setVideoUrl] = React.useState(null);
     const { userDetail, setUserDetail } = React.useContext(UserDetailContext);
-    const [idCloud, setIdCloud] = React.useState('');
-    const [title, setTitle] = React.useState('');
-    const [infoData, setInfoData] = React.useState({});
-    const [frameList, setFrameList] = React.useState([])
     const [mounted, setMounted] = React.useState(false);
     const router = useRouter();
     const [defaultLoading, setDefaultLoading] = React.useState(true);
     const [isMobileSidebarOpen, setMobileSidebarOpen] = React.useState(false);
     const [listAudioUserUpload, setListAudioUserUpload] = React.useState([]);
     const [listImageUserUpload, setListImageUserUpload] = React.useState([]);
+    const [listAudioTextChange, setListAudioTextChange] = React.useState([]);
 
     React.useEffect(() => {
         const handleBeforeUnload = (event) => {
@@ -78,7 +75,8 @@ function Editor() {
             const index = segment.segment_index;
 
             const updatedImage = listImageUserUpload?.[index]?.url;
-            const updatedAudio = listAudioUserUpload?.[index];
+            const updatedAudio = listAudioUserUpload?.[index]?.url;
+            const updatedText = listAudioTextChange?.[index];
 
             return {
                 ...segment,
@@ -88,6 +86,7 @@ function Editor() {
                         ? updatedAudio
                         : URL.createObjectURL(updatedAudio),
                 }),
+                ...(updatedText && { audio_text: updatedText }),
             };
         });
 
@@ -106,6 +105,7 @@ function Editor() {
     const handleExport = async () => {
         console.log('click export');
         setLoading(true);
+        const updateSegments = await updateFramesListBeforeProceed();
         try {
             const res = await axios.post('/api/export-video', {
                 id_cloud: videoFrames?.id_cloud || 'temporary-id',
@@ -178,9 +178,6 @@ function Editor() {
 
     }
 
-    // console.log("listAudioUserUpload:", listAudioUserUpload);
-    // console.log("listImageUserUpload:", listImageUserUpload);
-
     return (
         <div>
             <div>
@@ -222,7 +219,8 @@ function Editor() {
                         </div>
                         <div className='col-span-2'>
                             <FrameConfig listAudioUserUpload={listAudioUserUpload} setListAudioUserUpload={setListAudioUserUpload}
-                                listImageUserUpload={listImageUserUpload} setListImageUserUpload={setListImageUserUpload} />
+                                listImageUserUpload={listImageUserUpload} setListImageUserUpload={setListImageUserUpload}
+                                listAudioTextChange={listAudioTextChange} setListAudioTextChange={setListAudioTextChange} />
                         </div>
                     </div>
 

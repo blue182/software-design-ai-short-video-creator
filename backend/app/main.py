@@ -5,6 +5,7 @@ from app.api import generate_script
 from app.api import generate_video
 from app.api import export_video
 from app.api import generate_preview_video
+from app.api import audio
 import PIL
 import PIL.Image
 
@@ -29,3 +30,5 @@ app.include_router(generate_video.router, prefix="/api/video", tags=["video"])
 app.include_router(generate_preview_video.router, prefix="/api/preview-video", tags=["preview-video"])
 app.include_router(export_video.router, prefix="/api/export-video", tags=["export-video"])
 app.include_router(trends.router, prefix="/api/trends", tags=["Trends"])
+app.include_router(audio.router, prefix="/api/audio", tags=["Audio"])
+

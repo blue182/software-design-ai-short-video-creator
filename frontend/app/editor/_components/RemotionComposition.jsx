@@ -31,7 +31,7 @@ function RemotionComposition({ frameList, listImageUserUpload, listAudioUserUplo
                 const imageObj = listImageUserUpload?.[frame?.segment_index ?? index];
                 const image_url = imageObj?.url || frame?.image_url;
 
-                const audio_url = listAudioUserUpload?.[frame?.segment_index ?? index] || frame?.audio_url;
+                const audio_url = listAudioUserUpload?.[frame?.segment_index ?? index]?.url || frame?.audio_url;
                 return (
                     <Sequence key={frame.id || index} from={fromFrame} durationInFrames={duration}>
                         {isActive && (
