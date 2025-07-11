@@ -28,8 +28,42 @@ export default function VideoExportDetail({ selectedVideo, setSelectedVideo }) {
         }
     }, [selectedVideo]);
 
+    const [isUploading, setIsUploading] = React.useState(false);
+
     const handleShare = async () => {
-        console.log("Share video URL: ", selectedVideo.export_video_url);
+        console.log("Sharing video to YouTube...");
+        setIsUploading(true);
+        try {
+        const res = await fetch('/api/upload-yt', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                title: selectedVideo.title || 'AI Generated Video',
+                description: selectedVideo.description || 'From Aizento',
+                videoUrl: selectedVideo.export_video_url,
+                videoId: selectedVideo.id,
+            }),
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+            console.log("✅ YouTube link:", data.youtubeUrl);
+            alert(`Video uploaded to YouTube: ${data.youtubeUrl}`);
+            navigator.clipboard.writeText(data.youtubeUrl);
+            
+            } else {
+                console.error("❌ Upload failed:", data.error);
+                alert(`Upload failed: ${data.error}`);
+            }
+        } catch (err) {
+            console.error("Unexpected error:", err);
+            alert("Something went wrong. Please try again.");
+        } finally {
+            setIsUploading(false);
+        }
     };
 
     const handleDownload = async (videoUrl) => {

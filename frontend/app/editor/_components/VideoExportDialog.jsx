@@ -15,11 +15,13 @@ import { Button } from "@/components/ui/button";
 import { Download, Share2, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
+import { VideoFrameContext } from "@/app/_contexts/VideoFrameContext";
 
 
 export default function VideoExportDialog({ title, videoUrl }) {
     const [showDialog, setShowDialog] = React.useState(false);
     const router = useRouter();
+    const {videoFrames} = React.useContext(VideoFrameContext);
 
     React.useEffect(() => {
         if (videoUrl) {
@@ -27,8 +29,43 @@ export default function VideoExportDialog({ title, videoUrl }) {
         }
     }, [videoUrl]);
 
+    console.log("VideoExportDialog mounted with videoUrl:", videoFrames);
+
+    const [isUploading, setIsUploading] = React.useState(false);
     const handleShare = async () => {
-        console.log("Share video URL: ", videoUrl);
+        console.log("Sharing video to YouTube...");
+        setIsUploading(true);
+        try {
+        const res = await fetch('/api/upload-yt', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                title: title || 'AI Generated Video',
+                description: 'Video Created From Aizento',
+                videoUrl: videoUrl,
+                videoId: videoFrames.videoId,
+            }),
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+            console.log("✅ YouTube link:", data.youtubeUrl);
+            alert(`Video uploaded to YouTube: ${data.youtubeUrl}`);
+            navigator.clipboard.writeText(data.youtubeUrl);
+            
+            } else {
+                console.error("❌ Upload failed:", data.error);
+                alert(`Upload failed: ${data.error}`);
+            }
+        } catch (err) {
+            console.error("Unexpected error:", err);
+            alert("Something went wrong. Please try again.");
+        } finally {
+            setIsUploading(false);
+        }
     };
 
     const handleDownload = async (videoUrl) => {

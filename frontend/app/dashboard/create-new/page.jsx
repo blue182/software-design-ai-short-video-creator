@@ -172,7 +172,7 @@ function CreateNew() {
                             <h2 className="font-bold text-primary text-lg sm:text-sm md:text-lg lg:text-xl mb-2">Generated Raw Script from AI</h2>
                             <p className="text-sm sm:text-base md:text-lg text-gray-500 mb-2">Title: {title}</p>
                             <textarea
-                                className="w-full p-4 border rounded resize-y max-h-[600px] min-h-[200px] mt-2 border p-5 border-blue-700"
+                                className="w-full bg-white p-4 border rounded resize-y max-h-[600px] min-h-[200px] mt-2 border p-5 border-blue-700"
                                 rows={10}
                                 placeholder="Generated script will appear here..."
                                 value={script}

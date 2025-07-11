@@ -1,10 +1,11 @@
 // app/api/upload-yt/route.js
 import { google } from 'googleapis';
-import { Readable } from 'stream'; // 👈 cần thêm dòng này để tạo stream từ Buffer
+import { Readable } from 'stream'; 
+import { updateYoutubeUrl } from '@/lib/db/videos';
 
 export async function POST(req) {
   try {
-    const { title, description, videoUrl } = await req.json();
+    const { title, description, videoUrl, videoId } = await req.json();
 
     const oauth2Client = new google.auth.OAuth2(
       process.env.YT_CLIENT_ID,
@@ -48,6 +49,9 @@ export async function POST(req) {
     });
 
     const youtubeUrl = `https://www.youtube.com/watch?v=${uploadRes.data.id}`;
+
+    //save db
+    await updateYoutubeUrl(videoId, youtubeUrl);
 
     return new Response(JSON.stringify({ youtubeUrl }), {
       status: 200,
