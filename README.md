@@ -188,7 +188,7 @@ CLOUDINARY_API_SECRET=<your-api-secret>
 - **Frontend:** Next.js, React, Tailwind CSS
 - **Backend:** FastAPI, Uvicorn
 - **AI Services:** Gemini, Diffusers, Transformers
-- - **Media:** MoviePy (for video composition), edge-tts (for speech synthesis)
+- **Media:** MoviePy (for video composition), edge-tts (for speech synthesis)
 - **Cloud:** Cloudinary
 - **Other libs:** python-dotenv, aiofiles, python-multipart
 
