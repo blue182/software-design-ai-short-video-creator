@@ -27,13 +27,6 @@ export async function POST(req) {
         aiForm.append('duration', duration);
         aiForm.append('index', index);
 
-        // console.log('Sending request to AI service with form data:', {
-        //     id_cloud,
-        //     audio_text,
-        //     voice,
-        //     duration,
-        //     index,
-        // });
 
         // Gửi yêu cầu đến AI service
         const aiRes = await fetch(`${process.env.SERVICE_AI_URL}audio/generate`, {

@@ -9,8 +9,7 @@
     "lint": "next lint",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "seed": "node scripts/seed.js",
-    "postinstall": "cp node_modules/@ffmpeg/core/dist/ffmpeg-core.* public/ffmpeg/"
+    "seed": "node scripts/seed.js"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.23.0",

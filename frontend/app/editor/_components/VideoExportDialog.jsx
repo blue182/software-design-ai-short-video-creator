@@ -101,7 +101,7 @@ export default function VideoExportDialog({ title, videoUrl }) {
 
     const handleClose = () => {
         setShowDialog(false);
-        router.push("/dashboard");
+        // router.push("/dashboard");
     };
 
 

@@ -84,9 +84,9 @@ function ScriptEditor({
         }
     };
 
-    // console.log("List audio user upload:", listAudioUserUpload);
-    // console.log("List image user upload:", listImageUserUpload);
-    // console.log("listAudioTextChange:", listAudioTextChange);
+    console.log("List audio user upload:", listAudioUserUpload);
+    console.log("List image user upload:", listImageUserUpload);
+    console.log("listAudioTextChange:", listAudioTextChange);
 
     const handleAudioUpload = async (file) => {
 
@@ -186,8 +186,8 @@ function ScriptEditor({
                         <label className='font-medium mb-3 block'>Audio File</label>
                         <div className="flex flex-col items-center gap-3">
                             {audioPreview && (
-                                <div className='border border-primary-300 rounded-xl bg-white p-2'>
-                                    <audio controls src={audioPreview} className="max-w-xs" />
+                                <div className="border border-primary-300 rounded-xl bg-white p-2 w-full max-w-md">
+                                    <audio controls src={audioPreview} className="w-full" />
                                 </div>
                             )}
 
@@ -257,13 +257,20 @@ function ScriptEditor({
                     ) : (
                         <AudioTrimmer
                             file={selectedFile}
-                            onTrimmed={async (blob) => {
-                                const trimmedFile = new File([blob], 'trimmed.mp3', { type: 'audio/mpeg' });
-                                await handleAudioUpload(trimmedFile);
+                            onTrimmed={async (url) => {
+                                setListAudioUserUpload((prev) => ({
+                                    ...prev,
+                                    [frame?.segment_index]: { url },
+                                }));
+                                setSelectedFile(null);
+                                setShowTrimDialog(false);
+                                toast.success('✅ Audio trimmed and uploaded successfully!');
+
                             }}
                             maxDuration={frame?.duration || 5}
                         />
-                    )}
+                    )
+                    }
                 </DialogContent>
             </Dialog>
         </>
