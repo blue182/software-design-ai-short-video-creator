@@ -4,6 +4,10 @@
 
 This is the **full-stack project** for an AI-powered short video creator. It is built with **Next.js (Frontend)** and **FastAPI (Backend)**, integrating services like **OpenAI**, **Cloudinary**, **Text-to-Speech**, **Diffusers**, and **MoviePy** to generate viral short videos from trending content.
 
+**Consists of two members:**
+1. Nguyen Le Anh Thu - 22120354
+2. Nguyen Le Thanh Truc - 22120393
+
 ---
 
 ## 📦 Installation Guide
