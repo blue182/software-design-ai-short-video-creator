@@ -105,6 +105,40 @@ async function insertSegments(videoId, segmentsData) {
     }
 }
 
+function normalizeTextStyles(value) {
+    if (Array.isArray(value)) return value; // case: already an array
+    if (typeof value === 'string') {
+        try {
+            const parsed = JSON.parse(value);
+            return Array.isArray(parsed) ? parsed : [];
+        } catch {
+            return [];
+        }
+    }
+
+    return []; // fallback
+}
+
+function parseVideoSize(raw) {
+    if (!raw) return null;
+
+    try {
+        // Nếu raw là object (không phải string) → trả luôn
+        if (typeof raw === 'object') return raw;
+
+        // Nếu raw là stringified JSON (1 hoặc 2 lần)
+        const onceParsed = JSON.parse(raw);
+        if (typeof onceParsed === 'object') return onceParsed;
+
+        // Nếu vẫn là string → parse lần nữa
+        return JSON.parse(onceParsed);
+    } catch (err) {
+        console.warn('⚠️ Failed to parse video_size:', err);
+        return null;
+    }
+}
+
+
 async function getSegmentsByVideoId(videoId) {
     if (!videoId) {
         throw new Error('videoId is required');
@@ -118,7 +152,14 @@ async function getSegmentsByVideoId(videoId) {
             .from(segments)
             .where(eq(segments.video_id, video_id))
             .orderBy(segments.segment_index);
-        return result;
+
+        const parsedResult = result.map(segment => ({
+            ...segment,
+            text_styles: normalizeTextStyles(segment.text_styles),
+        }));
+
+
+        return parsedResult;
     }
     catch (err) {
         console.error('❌ Failed to retrieve segments:', err);
@@ -210,7 +251,12 @@ async function getAllSegmentsByVideoId(videoId) {
             .where(eq(segments.video_id, Number(videoId)))
             .orderBy(segments.segment_index);
 
-        return segmentsList;
+        const parsedSegments = segmentsList.map(segment => ({
+            ...segment,
+            text_styles: normalizeTextStyles(segment.text_styles),
+        }));
+
+        return parsedSegments;
     } catch (err) {
         console.error('❌ Error fetching segments by videoId:', err);
         throw err;
@@ -257,6 +303,7 @@ async function getPreviewVideosWithFirstSegment(userId) {
 
             result.push({
                 ...video,
+                video_size: parseVideoSize(video.video_size),
                 style,
                 voice,
                 language,
@@ -294,6 +341,7 @@ async function getExportedVideos(userId) {
 
         return exportedVideos.map(row => ({
             ...row.video,
+            video_size: parseVideoSize(row.video.video_size),
             style: row.style,
             voice: row.voice,
             language: row.language,

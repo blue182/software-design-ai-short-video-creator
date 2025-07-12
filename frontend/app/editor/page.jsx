@@ -110,6 +110,7 @@ function Editor() {
             const res = await axios.post('/api/export-video', {
                 id_cloud: videoFrames?.id_cloud || 'temporary-id',
                 segments: videoFrames?.framesList || [],
+                video_size: videoFrames?.infoVideo?.video_size || { aspect: '9:16', width: 720, height: 1280 },
             });
 
             const { videoUrl } = res.data;

@@ -65,18 +65,39 @@ export default function AnimatedFrame({ frame, duration, frameIndex }) {
                 }}
             />
             {frame.subtitle_enabled && (
-                <h2
+                <div
+                    // style={{
+                    //     position: 'absolute',
+                    //     bottom: frame.space_bottom || 20,
+
+
+                    //     display: 'inline-block',
+                    //     borderRadius: '8px',
+                    //     textAlign: 'center',
+                    //     fontSize: frame.font_size || 20,
+                    //     color: frame.subtitle_color || 'white',
+                    //     backgroundColor: frame.subtitle_bg || 'rgba(0,0,0,0.5)',
+                    //     fontWeight: frame.text_styles?.includes('bold') ? '700' : '400',
+                    //     fontStyle: frame.text_styles?.includes('italic') ? 'italic' : 'normal',
+                    //     textDecoration: [
+                    //         frame.text_styles?.includes('underline') ? 'underline' : '',
+                    //         frame.text_styles?.includes('strikethrough') ? 'line-through' : '',
+                    //     ].filter(Boolean).join(' '),
+                    //     textShadow: `${frame.stroke_width || 2}px ${frame.stroke_width || 2}px ${frame.stroke_color || 'black'}`,
+                    //     padding: '10px 20px',
+                    // }}
+
                     style={{
                         position: 'absolute',
                         bottom: frame.space_bottom || 20,
-
-
-                        display: 'inline-block',
-                        borderRadius: '8px',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        maxWidth: '90%',          // Chiều ngang tối đa
+                        width: 'max-content',     // Tự động co lại với text ngắn
                         textAlign: 'center',
-                        fontSize: frame.font_size || 20,
-                        color: frame.subtitle_color || 'white',
                         backgroundColor: frame.subtitle_bg || 'rgba(0,0,0,0.5)',
+                        color: frame.subtitle_color || 'white',
+                        fontSize: frame.font_size || 20,
                         fontWeight: frame.text_styles?.includes('bold') ? '700' : '400',
                         fontStyle: frame.text_styles?.includes('italic') ? 'italic' : 'normal',
                         textDecoration: [
@@ -85,10 +106,14 @@ export default function AnimatedFrame({ frame, duration, frameIndex }) {
                         ].filter(Boolean).join(' '),
                         textShadow: `${frame.stroke_width || 2}px ${frame.stroke_width || 2}px ${frame.stroke_color || 'black'}`,
                         padding: '10px 20px',
+                        borderRadius: '8px',
+                        whiteSpace: 'pre-wrap',
+                        wordBreak: 'break-word',
                     }}
+
                 >
                     {frame.text}
-                </h2>
+                </div>
             )}
         </>
     );

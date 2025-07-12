@@ -8,6 +8,16 @@ import {
 
 function ToggleGroupField({ defaultValue = [], handleInputChange }) {
     const [value, setValue] = React.useState(defaultValue)
+    console.log('ToggleGroupField value:', defaultValue)
+    console.log("✅ ToggleGroup value typeof:", typeof value, value)
+    React.useEffect(() => {
+        // Khi defaultValue thay đổi (ví dụ: từ fetch API), cập nhật lại value
+        if (Array.isArray(defaultValue)) {
+            setValue(defaultValue);
+        }
+    }, [defaultValue]);
+
+
 
     const handleChange = (val) => {
         setValue(val)

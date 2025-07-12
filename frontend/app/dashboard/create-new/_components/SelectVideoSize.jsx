@@ -8,8 +8,9 @@ import {
 
 const VIDEO_SIZE_OPTIONS = {
     "9:16": { width: 720, height: 1280 },
+    "3:4": { width: 720, height: 960 },
+    "2:3": { width: 800, height: 1200 },
     "1:1": { width: 1080, height: 1080 },
-    "16:9": { width: 1280, height: 720 }
 }
 
 function SelectVideoSize({ selected, onUserSelect }) {

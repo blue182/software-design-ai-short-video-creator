@@ -44,6 +44,7 @@ def generate_subtitle_image(
     VIDEO_SIZE=(720, 1208),
     space_bottom=10  # ✅ luôn cách mép dưới 10px
 ):
+    print("Generating subtitle image with text:", text)
     if not text:
         text = " "
 
@@ -51,6 +52,7 @@ def generate_subtitle_image(
     text_color = parse_color(text_color)
     bg_color = parse_color(bg_color)
     stroke_color = parse_color(stroke_color)
+    text_size_new = font_size + 10
 
     # Font logic
     is_bold = "bold" in text_styles
@@ -71,27 +73,31 @@ def generate_subtitle_image(
     wrapped_text = textwrap.fill(text, width=max_chars_per_line)
     num_lines = wrapped_text.count('\n') + 1
 
-    line_height = int((font_size + 10) * 1.6)
+    line_height = int((text_size_new) * 1.6)
     padding = 20
     text_box_height = num_lines * line_height + 2 * padding
     img_w = VIDEO_SIZE[0]
-    img_h = text_box_height + space_bottom
+    img_h = VIDEO_SIZE[1]  # ✅ full video size
 
     fig_w_in = img_w / DPI
     fig_h_in = img_h / DPI
 
-
     fig, ax = plt.subplots(figsize=(fig_w_in, fig_h_in), dpi=DPI)
-    fig.patch.set_facecolor('none')  # Nền trong suốt
+    fig.patch.set_facecolor('none')  # transparent
     ax.set_facecolor('none')
 
-    y_ratio = (space_bottom + text_box_height / 2) / img_h
+    # ✅ Tính y dựa theo VIDEO_SIZE chứ không theo ảnh con
+    # y = 1 - (space_bottom + text_box_height) / img_h
+    # y = space_bottom / img_h
+    y = 1 - (space_bottom / img_h)
 
     txt_obj = ax.text(
-        0.5, 0.5, wrapped_text,
-        fontsize=font_size,
+        0.5, y, wrapped_text,
+        fontsize=text_size_new,
         color=text_color,
-        ha='center', va='center',
+        ha='center', 
+        # va='bottom',
+        va='top',  # ✅ căn trên cùng
         wrap=True,
         fontproperties=font_prop,
         bbox=dict(
@@ -100,7 +106,6 @@ def generate_subtitle_image(
             boxstyle='round,pad=0.4'
         )
     )
-
 
     # Stroke / Shadow
     txt_obj.set_path_effects([
@@ -112,5 +117,7 @@ def generate_subtitle_image(
     ax.axis("off")
     plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
-    plt.savefig(output_path, bbox_inches='tight', pad_inches=0, transparent=True)
+    # plt.savefig(output_path, bbox_inches='tight', pad_inches=0, transparent=True)
+    # plt.savefig(output_path, pad_inches=0, transparent=True)
+    plt.savefig(output_path, bbox_inches=None, pad_inches=0, transparent=True)
     plt.close(fig)
