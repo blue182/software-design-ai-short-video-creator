@@ -1,19 +1,22 @@
 'use client';
 
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Slider } from "@/components/ui/slider";
 import { VideoFrameContext } from '@/app/_contexts/VideoFrameContext';
 
 
 export default function AudioTrimmer({ file, onTrimmed, maxDuration = 5 }) {
-  const { videFrames } = useContext(VideoFrameContext);
+  const { videoFrames } = useContext(VideoFrameContext);
   const audioRef = useRef(null);
   const [duration, setDuration] = useState(0);
   const [start, setStart] = useState(0);
   const [loading, setLoading] = useState(false);
 
   const url = file ? URL.createObjectURL(file) : null;
-  const end = Math.min(start + maxDuration, duration);
+  // const end = Math.min(start + maxDuration, duration);
+  const end = useMemo(() => {
+    return Math.min(start + maxDuration, duration);
+  }, [start, duration, maxDuration]);
 
   const handleLoadedMetadata = () => {
     const dur = audioRef.current?.duration || 0;
@@ -57,19 +60,29 @@ export default function AudioTrimmer({ file, onTrimmed, maxDuration = 5 }) {
       formData.append('start', start.toString());
       formData.append('end', end.toString());
       formData.append('duration', duration.toString());
-      formData.append('id_cloud', videFrames?.id_cloud);
+      formData.append('id_cloud', videoFrames?.id_cloud);
+      console.log('📦 Trimming audio with data:',
+        {
+          fileType: file.type,
+          fileSize: file.size,
+          start,
+          end,
+          duration,
+          id_cloud: videoFrames?.id_cloud,
+        }
+      );
 
-      const res = await fetch('/api/audio', {
-        method: 'POST',
-        body: formData,
-      });
+      // const res = await fetch('/api/audio/trim', {
+      //   method: 'POST',
+      //   body: formData,
+      // });
 
-      const data = await res.json();
+      // const data = await res.json();
 
-      if (!res.ok) throw new Error(data.error || 'Trim failed');
+      // if (!res.ok) throw new Error(data.error || 'Trim failed');
 
-      console.log('✅ Uploaded audio URL:', data.url);
-      onTrimmed(data.url);
+      // console.log('✅ Uploaded audio URL:', data.url);
+      // onTrimmed(data.url);
     } catch (err) {
       console.error('❌ Trim failed:', err);
       alert('Trim failed');

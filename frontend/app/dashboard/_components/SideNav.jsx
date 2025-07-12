@@ -1,5 +1,5 @@
 "use client"
-import { CircleUserRound, FileVideo, PanelsTopLeft, PersonStandingIcon, VideoIcon } from 'lucide-react'
+import { CircleUserRound, FileVideo, PanelsTopLeft, PersonStandingIcon, VideoIcon, ChartNoAxesCombined } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React from 'react'
@@ -18,17 +18,17 @@ function SideNav() {
             path: '/dashboard/create-new',
             icon: FileVideo,
         },
-        {
-            id: 3,
-            name: 'Account',
-            path: '/account',
-            icon: CircleUserRound
-        },
+        // {
+        //     id: 3,
+        //     name: 'Account',
+        //     path: '/account',
+        //     icon: CircleUserRound
+        // },
         {
             id: 4,
             name: 'View statistics',
             path: '/dashboard/statistics',
-            icon: CircleUserRound
+            icon: ChartNoAxesCombined,
         },
     ]
 

@@ -12,7 +12,7 @@ import {
     AlertDialogAction,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Download, Share2, X } from "lucide-react";
+import { CircleArrowRight, Download, Share2, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { VideoFrameContext } from "@/app/_contexts/VideoFrameContext";
@@ -21,7 +21,7 @@ import { VideoFrameContext } from "@/app/_contexts/VideoFrameContext";
 export default function VideoExportDialog({ title, videoUrl }) {
     const [showDialog, setShowDialog] = React.useState(false);
     const router = useRouter();
-    const {videoFrames} = React.useContext(VideoFrameContext);
+    const { videoFrames } = React.useContext(VideoFrameContext);
 
     React.useEffect(() => {
         if (videoUrl) {
@@ -36,26 +36,26 @@ export default function VideoExportDialog({ title, videoUrl }) {
         console.log("Sharing video to YouTube...");
         setIsUploading(true);
         try {
-        const res = await fetch('/api/upload-yt', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                title: title || 'AI Generated Video',
-                description: 'Video Created From Aizento',
-                videoUrl: videoUrl,
-                videoId: videoFrames.videoId,
-            }),
-        });
+            const res = await fetch('/api/upload-yt', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    title: title || 'AI Generated Video',
+                    description: 'Video Created From Aizento',
+                    videoUrl: videoUrl,
+                    videoId: videoFrames.videoId,
+                }),
+            });
 
-        const data = await res.json();
+            const data = await res.json();
 
-        if (res.ok) {
-            console.log("✅ YouTube link:", data.youtubeUrl);
-            alert(`Video uploaded to YouTube: ${data.youtubeUrl}`);
-            navigator.clipboard.writeText(data.youtubeUrl);
-            
+            if (res.ok) {
+                console.log("✅ YouTube link:", data.youtubeUrl);
+                alert(`Video uploaded to YouTube: ${data.youtubeUrl}`);
+                navigator.clipboard.writeText(data.youtubeUrl);
+
             } else {
                 console.error("❌ Upload failed:", data.error);
                 alert(`Upload failed: ${data.error}`);
@@ -101,7 +101,7 @@ export default function VideoExportDialog({ title, videoUrl }) {
 
     const handleClose = () => {
         setShowDialog(false);
-        router.push("/dashboard");
+        // router.push("/dashboard");
     };
 
 
@@ -152,8 +152,9 @@ export default function VideoExportDialog({ title, videoUrl }) {
                     {/* Close */}
                     <AlertDialogCancel asChild>
                         <Button variant="outline" className="border-gray-300" onClick={handleClose}>
-                            <X className="w-4 h-4 mr-0" />
-                            Close
+
+                            Go to Dashboard
+                            <CircleArrowRight className="w-4 h-4 mr-0" />
                         </Button>
                     </AlertDialogCancel>
                 </AlertDialogFooter>

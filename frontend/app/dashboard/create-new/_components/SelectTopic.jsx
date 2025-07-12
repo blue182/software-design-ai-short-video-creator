@@ -32,22 +32,22 @@ function SelectTopic({ onUserSelect, selected, hasError }) {
     const [trends, setTrends] = useState([]);
     const [loadingTrends, setLoadingTrends] = useState(false);
 
-    useEffect(() => {
-        setLoadingTrends(true);
-        fetch("http://localhost:8000/api/trends/")
-            .then(res => res.json())
-            .then(data => {
-                setTrends(data.keywords || []);
-            })
-            .catch(err => {
-                console.error("Failed to fetch trends:", err);
-                setTrends([]);
-            })
-            .finally(() => {
-                setLoadingTrends(false);
-            });
+    // useEffect(() => {
+    //     setLoadingTrends(true);
+    //     fetch("http://localhost:8000/api/trends/")
+    //         .then(res => res.json())
+    //         .then(data => {
+    //             setTrends(data.keywords || []);
+    //         })
+    //         .catch(err => {
+    //             console.error("Failed to fetch trends:", err);
+    //             setTrends([]);
+    //         })
+    //         .finally(() => {
+    //             setLoadingTrends(false);
+    //         });
 
-    }, []);
+    // }, []);
 
 
     return (

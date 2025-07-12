@@ -76,8 +76,28 @@ def apply_animation(clip, animation, duration, VIDEO_SIZE=(720, 1280)):
     return clip
 
 
+def resize_and_crop_center(image_path, duration, VIDEO_SIZE):
+    clip = ImageClip(image_path)
+    iw, ih = clip.size
+    vw, vh = VIDEO_SIZE
+
+    scale = max(vw / iw, vh / ih)  # scale sao cho ảnh phủ toàn bộ video
+    scaled_clip = clip.resize(scale)
+    return (
+        scaled_clip
+        .crop(
+            x_center=scaled_clip.w // 2,
+            y_center=scaled_clip.h // 2,
+            width=vw,
+            height=vh
+        )
+        .set_duration(duration)
+    )
+
+
+
 # ==== MAIN SEGMENT TO CLIP FUNCTION ====
-def create_clip_from_segment(segment, index=0, upload_single=False, render_id=None, upload_fn=None):
+def create_clip_from_segment(segment, index=0, upload_single=False, render_id=None, upload_fn=None, VIDEO_WIDTH=720, VIDEO_HEIGHT=1280):
     os.makedirs(TEMP_DIR, exist_ok=True)
     upload_fn = upload_fn or upload_file
 
@@ -103,12 +123,27 @@ def create_clip_from_segment(segment, index=0, upload_single=False, render_id=No
         stroke_width = segment.get("stroke_width", 2)
         space_bottom = segment.get("space_bottom", 20)
 
-    img_clip = ImageClip(image_path).set_duration(duration)
-    video_width, video_height = img_clip.size
-    VIDEO_SIZE = (video_width, video_height)
+    VIDEO_SIZE = (VIDEO_WIDTH, VIDEO_HEIGHT)
+
 
     audio = AudioFileClip(audio_path).subclip(0, min(duration, AudioFileClip(audio_path).duration))
-    raw_clip = ImageClip(image_path).set_duration(duration).resize(height=VIDEO_SIZE[1])
+    # raw_clip = ImageClip(image_path).set_duration(duration).resize(height=VIDEO_SIZE[1])
+    # raw_clip = (
+    #     ImageClip(image_path)
+    #     .resize(width=VIDEO_SIZE[0] * 1.2)  # hoặc bất kỳ tỉ lệ scale nào
+    #     .resize(height=VIDEO_SIZE[1] * 1.2)
+    #     .crop(
+    #         x_center=VIDEO_SIZE[0] // 2,
+    #         y_center=VIDEO_SIZE[1] // 2,
+    #         width=VIDEO_SIZE[0],
+    #         height=VIDEO_SIZE[1]
+    #     )
+    #     .set_duration(duration)
+    # )
+
+    raw_clip = resize_and_crop_center(image_path, duration, VIDEO_SIZE)
+
+
     animated_clip = apply_animation(raw_clip, animation, duration, VIDEO_SIZE=VIDEO_SIZE)
     img_clip = animated_clip
 

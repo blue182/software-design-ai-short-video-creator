@@ -13,8 +13,14 @@ async def api_trim_audio(
     end: float = Form(...),
     id_cloud: str = Form(...)
 ):
-    url = await trim_and_upload_audio(file, start, end, id_cloud)
-    return { "success": True, "url": url }
+    print(f"Trimming audio from {start} to {end} seconds for cloud ID: {id_cloud}")
+    try:
+        url = await trim_and_upload_audio(file, start, end, id_cloud)
+        return JSONResponse(content={ "success": True, "url": url })
+
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"success": False, "error": str(e)})
+
 
 @router.post("/generate")
 async def api_generate_audio(

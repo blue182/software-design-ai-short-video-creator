@@ -81,11 +81,7 @@ function Editor() {
             return {
                 ...segment,
                 ...(updatedImage && { image_url: updatedImage }),
-                ...(updatedAudio && {
-                    audio_url: typeof updatedAudio === 'string'
-                        ? updatedAudio
-                        : URL.createObjectURL(updatedAudio),
-                }),
+                ...(updatedAudio && { audio_url: updatedAudio }),
                 ...(updatedText && { audio_text: updatedText }),
             };
         });
@@ -96,6 +92,9 @@ function Editor() {
             ...videoFrames,
             framesList: updatedSegments,
         });
+        setListAudioTextChange([]);
+        setListAudioUserUpload([]);
+        setListImageUserUpload([]);
 
         return updatedSegments;
     };
@@ -109,7 +108,8 @@ function Editor() {
         try {
             const res = await axios.post('/api/export-video', {
                 id_cloud: videoFrames?.id_cloud || 'temporary-id',
-                segments: videoFrames?.framesList || [],
+                segments: updateSegments || [],
+                video_size: videoFrames?.infoVideo?.video_size || { aspect: '9:16', width: 720, height: 1280 },
             });
 
             const { videoUrl } = res.data;

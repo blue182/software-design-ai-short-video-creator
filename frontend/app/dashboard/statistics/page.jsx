@@ -162,11 +162,14 @@ export default function StatisticsPage() {
 
   return (
     <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">Thống kê Video YouTube</h2>
+      <div className="flex sm:items-center justify-between gap-4 mb-6 border-b border-primary-300 pb-4">
+
+        <h2 className="font-bold text-xl sm:text-xl md:text-2xl lg:text-3xl text-primary">Youtube data statistics</h2>
+      </div>
       {chartData ? (
         <Bar data={chartData} />
       ) : (
-        <p>Đang tải dữ liệu...</p>
+        <p>Loading data...</p>
       )}
     </div>
   );

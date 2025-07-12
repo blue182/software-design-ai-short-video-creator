@@ -34,26 +34,26 @@ export default function VideoExportDetail({ selectedVideo, setSelectedVideo }) {
         console.log("Sharing video to YouTube...");
         setIsUploading(true);
         try {
-        const res = await fetch('/api/upload-yt', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                title: selectedVideo.title || 'AI Generated Video',
-                description: selectedVideo.description || 'From Aizento',
-                videoUrl: selectedVideo.export_video_url,
-                videoId: selectedVideo.id,
-            }),
-        });
+            const res = await fetch('/api/upload-yt', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    title: selectedVideo.title || 'AI Generated Video',
+                    description: selectedVideo.description || 'From Aizento',
+                    videoUrl: selectedVideo.export_video_url,
+                    videoId: selectedVideo.id,
+                }),
+            });
 
-        const data = await res.json();
+            const data = await res.json();
 
-        if (res.ok) {
-            console.log("✅ YouTube link:", data.youtubeUrl);
-            alert(`Video uploaded to YouTube: ${data.youtubeUrl}`);
-            navigator.clipboard.writeText(data.youtubeUrl);
-            
+            if (res.ok) {
+                console.log("✅ YouTube link:", data.youtubeUrl);
+                alert(`Video uploaded to YouTube: ${data.youtubeUrl}`);
+                navigator.clipboard.writeText(data.youtubeUrl);
+
             } else {
                 console.error("❌ Upload failed:", data.error);
                 alert(`Upload failed: ${data.error}`);
@@ -146,15 +146,28 @@ export default function VideoExportDetail({ selectedVideo, setSelectedVideo }) {
                             <p><span className="font-semibold">🕒 Duration:</span> {selectedVideo?.duration?.label} </p>
 
 
-                            {(() => {
-                                const size = JSON.parse(selectedVideo?.video_size || '{}');
-                                return (
-                                    <p>
-                                        <span className="font-semibold">📏 Size:</span>{" "}
-                                        {size.aspect || 'N/A'} ({size.width}x{size.height})
-                                    </p>
-                                );
-                            })()}
+                            <p>
+                                {(() => {
+                                    let size = selectedVideo?.video_size;
+
+                                    // Nếu là string thì parse, nếu là object thì giữ nguyên
+                                    if (typeof size === 'string') {
+                                        try {
+                                            size = JSON.parse(size);
+                                        } catch {
+                                            size = {}; // fallback nếu parse lỗi
+                                        }
+                                    }
+
+                                    return (
+                                        <>
+                                            <span className="font-semibold">📏 Size:</span>{" "}
+                                            {size.aspect || 'N/A'} ({size.width || 0}x{size.height || 0})
+                                        </>
+                                    );
+                                })()}
+                            </p>
+
                             <p><span className="font-semibold">📅 Created at:</span> {formatDateTime(selectedVideo?.created_at)}</p>
                             <p><span className="font-semibold">📅 Export at:</span> {formatDateTime(selectedVideo?.updated_at)}</p>
                             <p><span className="font-semibold">📌 Status:</span> {selectedVideo?.status}</p>

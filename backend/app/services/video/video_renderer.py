@@ -8,14 +8,14 @@ from .clip_generator import create_clip_from_segment
 
 TEMP_DIR = "temp"
 
-def generate_video_from_segments(segments, render_id, upload_fn=None):
+def generate_video_from_segments(segments, render_id, upload_fn=None, VIDEO_WIDTH=720, VIDEO_HEIGHT=1280):
     upload_fn = upload_fn or upload_file
     os.makedirs(TEMP_DIR, exist_ok=True)
     output_video_path = os.path.join(TEMP_DIR, f"{uuid.uuid4()}.mp4")
 
     clips = []
     for idx, segment in enumerate(segments):
-        clip = create_clip_from_segment(segment, index=idx)
+        clip = create_clip_from_segment(segment, index=idx, VIDEO_WIDTH=VIDEO_WIDTH, VIDEO_HEIGHT=VIDEO_HEIGHT)
         clips.append(clip)
 
     final_video = concatenate_videoclips(clips, method="compose")
