@@ -53,6 +53,29 @@ module.exports = {
 }
 ```
 
+### 🔐 Environment Variables
+
+Create a `.env` file inside the `frontend/` folder:
+
+```env
+# === Backend Service URL ===
+SERVICE_AI_URL=http://localhost:8000/api/
+NEXT_PUBLIC_SERVICE_AI_URL=http://localhost:8000
+
+# === Database (PostgreSQL with Drizzle ORM) ===
+DRIZZLE_DATABASE_URL=postgresql://Ai-Short-Video-Creator_owner:npg_8fKp4XQNuUkP@ep-calm-fog-a82c9dza-pooler.eastus2.azure.neon.tech/Ai-Short-Video-Creator?sslmode=require&channel_binding=require
+
+# === Cloudinary (for media storage) ===
+CLOUDINARY_CLOUD_NAME=dszu0fyxg
+CLOUDINARY_API_KEY=638779557924918
+CLOUDINARY_API_SECRET=_1ak81ExeSe2bBijfN5GI9nO8AM
+
+# === Clerk Authentication ===
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_ZGVjaWRpbmctY29sdC05OS5jbGVyay5hY2NvdW50cy5kZXYk
+CLERK_SECRET_KEY=sk_test_9U0344QNQE8YLZdykbgW2xn35FqvzYS3XZHkH4QasJ
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+```
 
 
 Start the frontend dev server:
@@ -118,25 +141,29 @@ Once the backend server is running, open your browser at:
 
 ---
 
-## 🔐 Environment Variables
+### 🔐 Environment Variables
 
 Create a `.env` file inside the `backend/` folder:
 
 ```env
-OPENAI_API_KEY=your_openai_key
+# === Gemini (Google Generative AI) ===
+GEMINI_API_KEY=AIzaSyAX4xmGR09xlJA3EH_CY5dqkHi-vQgoYJQ
 
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
+# === Pixabay (Image & Video Search) ===
+PIXABAY_API_KEY=51177893-79002694a660b7ac4408b0012
 
-GEMINI_API_KEY=your_gemini_key
+# === Together AI (LLM Inference API) ===
+TOGETHERAI_API_KEY=dd07a942b429f652aac24d388bb58ad1eb5780ea9b0823a9592d9636a443afb6
 
-PIXABAY_API_KEY=your_pixabay_key
+# === SerpAPI & RapidAPI (Search & Utility APIs) ===
+SERPAPI_KEY=5ae63d7b907b6d2d06a21b75467587ec0c0d404f8ac311ab4c66ec3aa12bc8e8
+RAPIDAPI_KEY=5ae63d7b907b6d2d06a21b75467587ec0c0d404f8ac311ab4c66ec3aa12bc8e8
 
-TOGETHERAI_API_KEY=your_togetherai_key
+# === Cloudinary (for media storage) ===
+CLOUDINARY_CLOUD_NAME=dszu0fyxg
+CLOUDINARY_API_KEY=638779557924918
+CLOUDINARY_API_SECRET=_1ak81ExeSe2bBijfN5GI9nO8AM
 
-SERPAPI_KEY=your_serpapi_key
-RAPIDAPI_KEY=your_rapidapi_key
 ```
 
 ---
@@ -157,8 +184,8 @@ RAPIDAPI_KEY=your_rapidapi_key
 
 - **Frontend:** Next.js, React, Tailwind CSS
 - **Backend:** FastAPI, Uvicorn
-- **AI Services:** OpenAI, Diffusers, Transformers
-- **Media:** MoviePy, edge-tts, Bark
+- **AI Services:** Gemini, Diffusers, Transformers
+- - **Media:** MoviePy (for video composition), edge-tts (for speech synthesis)
 - **Cloud:** Cloudinary
 - **Other libs:** python-dotenv, aiofiles, python-multipart
 
