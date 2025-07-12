@@ -128,6 +128,15 @@ OPENAI_API_KEY=your_openai_key
 CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
+
+GEMINI_API_KEY=your_gemini_key
+
+PIXABAY_API_KEY=your_pixabay_key
+
+TOGETHERAI_API_KEY=your_togetherai_key
+
+SERPAPI_KEY=your_serpapi_key
+RAPIDAPI_KEY=your_rapidapi_key
 ```
 
 ---
