@@ -59,22 +59,25 @@ Create a `.env` file inside the `frontend/` folder:
 
 ```env
 # === Backend Service URL ===
+# FastAPI backend endpoint
 SERVICE_AI_URL=http://localhost:8000/api/
 NEXT_PUBLIC_SERVICE_AI_URL=http://localhost:8000
 
-# === Database (PostgreSQL with Drizzle ORM) ===
-DRIZZLE_DATABASE_URL=postgresql://Ai-Short-Video-Creator_owner:npg_8fKp4XQNuUkP@ep-calm-fog-a82c9dza-pooler.eastus2.azure.neon.tech/Ai-Short-Video-Creator?sslmode=require&channel_binding=require
+# === PostgreSQL Database (used with Drizzle ORM) ===
+# Format: postgresql://USERNAME:PASSWORD@HOST/DATABASE?sslmode=require
+DRIZZLE_DATABASE_URL=postgresql://<username>:<password>@<host>/<database>?sslmode=require&channel_binding=require
 
 # === Cloudinary (for media storage) ===
-CLOUDINARY_CLOUD_NAME=dszu0fyxg
-CLOUDINARY_API_KEY=638779557924918
-CLOUDINARY_API_SECRET=_1ak81ExeSe2bBijfN5GI9nO8AM
+CLOUDINARY_CLOUD_NAME=<your-cloud-name>
+CLOUDINARY_API_KEY=<your-api-key>
+CLOUDINARY_API_SECRET=<your-api-secret>
 
 # === Clerk Authentication ===
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_ZGVjaWRpbmctY29sdC05OS5jbGVyay5hY2NvdW50cy5kZXYk
-CLERK_SECRET_KEY=sk_test_9U0344QNQE8YLZdykbgW2xn35FqvzYS3XZHkH4QasJ
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=<your-clerk-publishable-key>
+CLERK_SECRET_KEY=<your-clerk-secret-key>
 NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
 NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+
 ```
 
 
@@ -147,22 +150,22 @@ Create a `.env` file inside the `backend/` folder:
 
 ```env
 # === Gemini (Google Generative AI) ===
-GEMINI_API_KEY=AIzaSyAX4xmGR09xlJA3EH_CY5dqkHi-vQgoYJQ
+GEMINI_API_KEY=<your-gemini-api-key>
 
-# === Pixabay (Image & Video Search) ===
-PIXABAY_API_KEY=51177893-79002694a660b7ac4408b0012
+# === Pixabay (Image & Video Search API) ===
+PIXABAY_API_KEY=<your-pixabay-api-key>
 
 # === Together AI (LLM Inference API) ===
-TOGETHERAI_API_KEY=dd07a942b429f652aac24d388bb58ad1eb5780ea9b0823a9592d9636a443afb6
+TOGETHERAI_API_KEY=<your-togetherai-api-key>
 
-# === SerpAPI & RapidAPI (Search & Utility APIs) ===
-SERPAPI_KEY=5ae63d7b907b6d2d06a21b75467587ec0c0d404f8ac311ab4c66ec3aa12bc8e8
-RAPIDAPI_KEY=5ae63d7b907b6d2d06a21b75467587ec0c0d404f8ac311ab4c66ec3aa12bc8e8
+# === Search APIs (SerpAPI, RapidAPI) ===
+SERPAPI_KEY=<your-serpapi-key>
+RAPIDAPI_KEY=<your-rapidapi-key>
 
 # === Cloudinary (for media storage) ===
-CLOUDINARY_CLOUD_NAME=dszu0fyxg
-CLOUDINARY_API_KEY=638779557924918
-CLOUDINARY_API_SECRET=_1ak81ExeSe2bBijfN5GI9nO8AM
+CLOUDINARY_CLOUD_NAME=<your-cloud-name>
+CLOUDINARY_API_KEY=<your-api-key>
+CLOUDINARY_API_SECRET=<your-api-secret>
 
 ```
 
