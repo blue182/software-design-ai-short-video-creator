@@ -72,17 +72,17 @@ export default function AudioTrimmer({ file, onTrimmed, maxDuration = 5 }) {
         }
       );
 
-      // const res = await fetch('/api/audio/trim', {
-      //   method: 'POST',
-      //   body: formData,
-      // });
+      const res = await fetch('/api/audio/trim', {
+        method: 'POST',
+        body: formData,
+      });
 
-      // const data = await res.json();
+      const data = await res.json();
 
-      // if (!res.ok) throw new Error(data.error || 'Trim failed');
+      if (!res.ok) throw new Error(data.error || 'Trim failed');
 
-      // console.log('✅ Uploaded audio URL:', data.url);
-      // onTrimmed(data.url);
+      console.log('✅ Uploaded audio URL:', data.url);
+      onTrimmed(data.url);
     } catch (err) {
       console.error('❌ Trim failed:', err);
       alert('Trim failed');
@@ -146,7 +146,7 @@ export default function AudioTrimmer({ file, onTrimmed, maxDuration = 5 }) {
           onClick={handlePlay}
           className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
         >
-          ▶️ Play
+          ▶️ Play cut audio
         </button>
 
         <button

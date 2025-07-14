@@ -59,7 +59,7 @@ function TrackList({ listImageUserUpload }) {
                                 />
                             )}
 
-                            <h2 className="text-xs line-clamp-2 mt-1">{frame?.segment_index}</h2>
+                            <h2 className="text-sm lg:text-base line-clamp-2 mt-1">Frame: {index + 1}</h2>
 
                             {selectedFrame === index && (
                                 <Trash2
