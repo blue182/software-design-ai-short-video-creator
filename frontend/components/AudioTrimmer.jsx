@@ -61,16 +61,16 @@ export default function AudioTrimmer({ file, onTrimmed, maxDuration = 5 }) {
       formData.append('end', end.toString());
       formData.append('duration', duration.toString());
       formData.append('id_cloud', videoFrames?.id_cloud);
-      console.log('📦 Trimming audio with data:',
-        {
-          fileType: file.type,
-          fileSize: file.size,
-          start,
-          end,
-          duration,
-          id_cloud: videoFrames?.id_cloud,
-        }
-      );
+      // console.log('📦 Trimming audio with data:',
+      //   {
+      //     fileType: file.type,
+      //     fileSize: file.size,
+      //     start,
+      //     end,
+      //     duration,
+      //     id_cloud: videoFrames?.id_cloud,
+      //   }
+      // );
 
       const res = await fetch('/api/audio/trim', {
         method: 'POST',
@@ -105,7 +105,7 @@ export default function AudioTrimmer({ file, onTrimmed, maxDuration = 5 }) {
 
 
 
-  console.log('duration:', duration, 'start:', start, 'end:', end);
+  // console.log('duration:', duration, 'start:', start, 'end:', end);
 
 
   return (
