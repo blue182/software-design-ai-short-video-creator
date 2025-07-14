@@ -30,7 +30,7 @@ export function convertToFrameList(rawData) {
         stroke_color: 'black',
         stroke_width: 3,
         font_size: 20,
-        animation: 'fade',
+        animation: 'zoom-out',
         space_bottom: 10,
         description_image: '',
 
